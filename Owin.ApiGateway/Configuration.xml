@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Endpoints>
+    <RoutingEndpoint>
+      <Id>DumpService</Id>
+      <Uri>http://localhost:5010/FakeService/{R:1}</Uri>
+    </RoutingEndpoint>
+    <RoutingEndpoint>
+      <Id>OldJira</Id>
+      <Uri>http://10.208.123.20:8080/{R:1}</Uri>
+    </RoutingEndpoint>
+  </Endpoints>
+  <ConditionEndpoints>
+    <RoutingConditionEndpoint>
+      <Condition xsi:type="SoapActionCondition">
+        <RequiredSoapAction>bm.hello</RequiredSoapAction>
+      </Condition>
+      <EndpointId>DumpService</EndpointId>
+    </RoutingConditionEndpoint>
+    <RoutingConditionEndpoint>
+      <Condition xsi:type="RequestPathAndQueryCondition">
+        <RequestPathRegexString>^service1(.*)</RequestPathRegexString>
+      </Condition>
+      <EndpointId>DumpService</EndpointId>
+    </RoutingConditionEndpoint>
+    <RoutingConditionEndpoint>
+      <Condition xsi:type="RequestPathAndQueryCondition">
+        <RequestPathRegexString>^oldjira(.*)</RequestPathRegexString>
+      </Condition>
+      <EndpointId>OldJira</EndpointId>
+    </RoutingConditionEndpoint>
+    <RoutingConditionEndpoint>
+      <Condition xsi:type="AlwaysMatchingCondition" />
+      <EndpointId>DumpService</EndpointId>
+    </RoutingConditionEndpoint>
+  </ConditionEndpoints>
+</Configuration>

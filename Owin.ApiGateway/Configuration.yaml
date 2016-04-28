@@ -1,0 +1,22 @@
+﻿Endpoints:
+- Id: DumpService
+  Uri: http://localhost:5010/FakeService/{R:1}
+- Id: OldJira
+  Uri: http://10.208.123.20:8080/{R:1}
+ConditionEndpoints:
+- Condition:
+   !!SoapActionCondition
+   RequiredSoapAction: bm.hello
+  EndpointId: DumpService
+- Condition:
+   !!RequestPathAndQueryCondition
+   RequestPathRegexString: ^service1(.*)
+  EndpointId: DumpService
+- Condition:
+   !!RequestPathAndQueryCondition
+   RequestPathRegexString: ^oldjira(.*)
+  EndpointId: OldJira
+- Condition:
+   !!AlwaysMatchingCondition
+   {}
+  EndpointId: DumpService
