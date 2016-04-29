@@ -8,9 +8,10 @@ about API Gateway pattern [here](http://microservices.io/patterns/apigateway.htm
 research, me and my colleagues were not able to find any reasonable solution implemented
 in .NET for **on-premise** usage. Why .NET? Because I am a .NET developer and see below mentioned advantages of
 having API Gateway implemented in .NET:
-1. Technology Consistency - all my building blocks are created in the same programming
+
+* Technology Consistency - all my building blocks are created in the same programming
 language;
-2. Easy to troubleshot - as a guy with strong C# skills I can use all troubleshoting techniques I know to find bugs and identify performance bottlenecks.
+* Easy to troubleshot - as a guy with strong C# skills I can use all troubleshoting techniques I know to find bugs and identify performance bottlenecks.
 
 There are plenty of API Gateways implemented either in other programming languages or
 created by Microsoft but for some reasons not addressing my needs. You can jump to
@@ -19,6 +20,16 @@ created by Microsoft but for some reasons not addressing my needs. You can jump 
 ## Project status
 
 version 0.0.1 - I've just started :-)
+
+## Desired features
+
+* Flexibility and Extensibility
+* Routing / balancing
+* Service Registry
+* Wide logging options (audit logs, including requests and responses)
+* Wide caching options (including POST operations)
+* Circuit Breaker
+* Health checking / monitoring
 
 ## Implemented features
 
@@ -46,19 +57,19 @@ Service Registry or is registered in Service Registry by someone else. Service R
 
 |Feature| IIS + ARR | Service Fabric | Netflix (linux, JAVA) | NGINX (linux, C) |
 |-------| --------- | -------------- | --------------------- | -----------------|
-|Transport| HTTP(s),  Terminating TLS/SSL, GZIP compression | Does not matter | ??? | Terminating TLS/SSL, GZIP compression |
+|Transport| HTTP(s),  Terminating TLS/SSL, GZIP compression | Does not matter | Terminating TLS/SSL, GZIP compression | Terminating TLS/SSL, GZIP compression |
 | REST | yes | yes | yes | yes |
 | SOAP | yes | yes | yes | yes |
-| Routing | based on URL regex match, based on HTTP headers, session persistence (cookie), load balancing (multiple algorithms) | load balancer is not included | ??? | ??? |
-| Configuration via REST API | no | yes | ??? | ??? |
-| PowerShell support | yes | yes | ??? | ??? |
-| Service Registry | no | yes | ??? | ??? |
-| Health checking| yes | yes | ??? | ??? |
-| Logging | partial. Logging full requests/responses to DB not possible out of the box | no | ??? | ??? |
-| Authorization | yes (URL Authorization) | no | ??? | ??? |
-| Caching| yes for GET operations, not possible for POST operations | no | ??? | ??? |
-| Circuit Breaker | no | no | ??? | ??? |
-| Monitoring dashboards | no | yes | ??? | ??? |
-| Extensibility | yes (custom modules) | yes | ??? | ??? |
-| Recommended OS| Windows | Windows | ??? | ??? |
+| Routing | based on URL regex match, based on HTTP headers, session persistence (cookie), load balancing (multiple algorithms) | load balancer is not included | yes, mature with a lot of options, by filters, by ribbon (client loadbalancer) by eureka (service registry) |  based on application parameters, A/B testing (simple rule to split traffic into two parts), session persistence (cookie, sticky, scripted), session draining, load balancing (TCP/HTTP, connection limit, rate limits (requests per second and requests per minute), methods: Round-Robin, Least Connections, Generic Hash, and IP Hash, Least Time) |
+| Configuration via REST API | no | yes | yes | yes |
+| PowerShell support | yes | yes | no | no |
+| Service Registry | no | yes | yes, eureka service, easy to integrate | Partial (via "Consul Template to dynamically reconfigure NGINX reverse proxying") |
+| Health checking| yes | yes | yes | yes (based on URI, regex response validation, slow-start) |
+| Logging | partial. Logging full requests/responses to DB not possible out of the box | no | yes, by filters, but also some OSS products | only standard HTTP access log formats |
+| Authorization | yes (URL Authorization) | no | yes, by filters | partial (based on IP or flat file with usernames and passwords) |
+| Caching| yes for GET operations, not possible for POST operations | no | yes by filters, by ribbon | yes (internal or external/Redis) |
+| Circuit Breaker | no | no | yes, by Hystrix library, looks like very mature solution, but also looks is only applicable for Java applications | no |
+| Monitoring dashboards | no | yes | yes | yes (seems very nice and there is also REST API for external integration) |
+| Extensibility | yes (custom modules) | yes | fully, thanks to plugin architecture | possiblie with C, static compilation*, probably Lua langugae as well |
+| Recommended OS| Windows | Windows | Linux | Linux |
 | Price | included in OS price | free | free | basic version for free |
