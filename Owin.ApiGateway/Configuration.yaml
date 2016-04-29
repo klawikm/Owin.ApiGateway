@@ -1,4 +1,5 @@
-﻿Endpoints:
+﻿Port: 5009
+Endpoints:
 - Id: DumpService
   Uri: http://localhost:5010/FakeService/{R:1}
 - Id: OldJira

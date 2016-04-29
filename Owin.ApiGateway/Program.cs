@@ -8,7 +8,8 @@
     {
         private static void Main(string[] args)
         {
-            var baseUrl = "http://localhost:5009/";
+            var config = Owin.ApiGateway.Configuration.Configuration.Load();
+            var baseUrl = string.Format("http://localhost:{0}/", config.Port);
 
             using (var server = WebApp.Start<Startup>(new StartOptions(baseUrl)))
             {
