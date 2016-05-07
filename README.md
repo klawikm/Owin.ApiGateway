@@ -36,6 +36,8 @@ version 0.0.1 - I've just started :-)
 * Static routing of SOAP based and RESTfull web-services
 * Routing based on SOAP Action header or request path
 * Routing configuration stored in XML or YAML file
+* API Gateway can run as "self host" but also can be hosted in IIS
+* Response caching (currently only via MemoryCache but you can also inject your own cache provider) 
 
 ## Road map
 
