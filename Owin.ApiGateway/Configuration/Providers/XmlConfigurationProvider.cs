@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using System.Text;
+    using System.Web.Hosting;
     using System.Xml.Serialization;
 
     public class XmlConfigurationProvider : IConfigurationProvider
@@ -12,6 +13,12 @@
         public XmlConfigurationProvider(string configurationFileName)
         {
             this.configurationFileName = configurationFileName;
+
+            // fix path is APIGateway is hosted in IIS
+            if (HostingEnvironment.IsHosted)
+            {
+                this.configurationFileName = HostingEnvironment.MapPath("~/" + this.configurationFileName);
+            }
         }
 
         public Configuration Load()
@@ -35,7 +42,7 @@
 
             File.WriteAllText(this.configurationFileName, sb.ToString());
         }
-
+        
         public EventHandler<ConfigurationChangedEventArgs> ConfigurationChangedHandler
         {
             get

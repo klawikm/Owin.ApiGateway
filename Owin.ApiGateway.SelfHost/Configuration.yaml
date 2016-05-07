@@ -4,7 +4,7 @@ Endpoints:
   Uri: http://localhost:5010/FakeService/{R:1}
 - Id: OldJira
   Uri: http://10.208.123.20:8080/{R:1}
-ConditionEndpoints:
+Routes:
 - Condition:
    !!SoapActionCondition
    RequiredSoapAction: bm.hello

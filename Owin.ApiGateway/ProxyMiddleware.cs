@@ -7,6 +7,8 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using Owin.ApiGateway.Exceptions;
+
     using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
 
     public class ProxyMiddleware
@@ -15,13 +17,10 @@
 
         private readonly ProxyOptions options;
 
-        private readonly IRoutingService routingService;
-
-        public ProxyMiddleware(AppFunc next, ProxyOptions options, IRoutingService routingService)
+        public ProxyMiddleware(AppFunc next, ProxyOptions options)
         {
             this.next = next;
             this.options = options;
-            this.routingService = routingService;
         }
 
         public async Task Invoke(IDictionary<string, object> env)
@@ -33,7 +32,11 @@
                 var requestHeadersDictionary = env["owin.RequestHeaders"] as IDictionary<string, string[]>;
                 var requestMethod = (string)env["owin.RequestMethod"];
 
-                var requestUri = this.GetRedirectionUri(env, requestHeadersDictionary);
+                var requestUri = env[Tools.RedirectionUriEnvKey] as string;
+                if (requestUri == null)
+                {
+                    throw new PipelineConfigurationException(string.Format(Tools.PossibleLackOfRoutingManagerInPipelineExceptionMessageTemplate, Tools.RedirectionUriEnvKey));
+                }
 
                 using (var httpClient = new HttpClient())
                 {
@@ -60,45 +63,10 @@
             }
             catch (Exception ex)
             {
-                ShowExceptionDetails(ex);
+                Tools.ShowExceptionDetails(ex);
 
                 throw;
             }
-        }
-
-        private static void ShowExceptionDetails(Exception ex)
-        {
-            Console.WriteLine(ex.GetType().ToString());
-            Console.WriteLine(ex.Message);
-            Console.WriteLine(ex.StackTrace);
-        }
-
-        private string GetRedirectionUri(IDictionary<string, object> env, IDictionary<string, string[]> requestHeadersDictionary)
-        {
-            var requestPath = (string)env["owin.RequestPath"];
-            var requestQueryString = (string)env["owin.RequestQueryString"];
-
-            var requestUri = this.routingService.GetRedirectionBaseUri(env);
-
-            var requestUriBuilder = new StringBuilder();
-            requestUriBuilder.Append(requestUri);
-
-            //if (!requestPath.Equals("/"))
-            //{
-            //    if (requestUri.EndsWith("/") && requestPath.StartsWith("/"))
-            //    {
-            //        requestPath = requestPath.Substring(1);
-            //    }
-
-            //    requestUriBuilder.Append(requestPath);
-            //}
-
-            //if (!string.IsNullOrEmpty(requestQueryString))
-            //{
-            //    requestUriBuilder.AppendFormat("?{0}", requestQueryString);
-            //}
-
-            return requestUriBuilder.ToString();
         }
 
         private void SetHttpHeaders(HttpRequestMessage outgoingRequest, IDictionary<string, string[]> incomingRequestHeadersDictionary)

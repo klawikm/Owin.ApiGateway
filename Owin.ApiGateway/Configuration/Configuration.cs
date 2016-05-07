@@ -10,14 +10,14 @@
         public Configuration()
         {
             this.Endpoints = new List<RoutingEndpoint>();
-            this.ConditionEndpoints = new List<RoutingConditionEndpoint>();
+            this.Routes = new List<RouteConfiguration>();
         }
 
         public int Port { get; set; }
 
         public List<RoutingEndpoint> Endpoints { get; set; }
 
-        public List<RoutingConditionEndpoint> ConditionEndpoints { get; set; }
+        public List<RouteConfiguration> Routes { get; set; }
 
         public void AddEndpoint(string endpointId, string endpointUri)
         {
@@ -26,7 +26,7 @@
 
         public void AddRoute(RoutingCondition condition, string endpointId)
         {
-            this.ConditionEndpoints.Add(new RoutingConditionEndpoint { Condition = condition, EndpointId = endpointId });
+            this.Routes.Add(new RouteConfiguration { Condition = condition, EndpointId = endpointId });
         }
 
         public static Configuration Load()
