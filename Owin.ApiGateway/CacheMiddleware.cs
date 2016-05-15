@@ -10,6 +10,7 @@
     using Microsoft.Owin;
 
     using Owin.ApiGateway.Cache;
+    using Owin.ApiGateway.Configuration;
     using Owin.ApiGateway.Exceptions;
     using Owin.ApiGateway.RoutingConditions;
 
@@ -51,7 +52,7 @@
 
                     requestBuffer.Position = 0;
                     var cacheKey = this.CreateKey(env, requestBuffer);
-                    Console.WriteLine("Cache key: {0}", cacheKey);
+                    // Console.WriteLine("Cache key: {0}", cacheKey);
 
                     // check if we have request and response in the cache
                     var cachedResponseBody = this.cache.GetFromCache(cacheKey) as string;

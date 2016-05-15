@@ -1,8 +1,7 @@
-namespace Owin.ApiGateway
+namespace Owin.ApiGateway.Configuration
 {
     using System.Xml.Serialization;
 
-    using Owin.ApiGateway.Configuration;
     using Owin.ApiGateway.RoutingConditions;
 
     [XmlInclude(typeof(SoapActionCondition))]

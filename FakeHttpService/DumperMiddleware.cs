@@ -11,7 +11,7 @@
     {
         private readonly AppFunc _next;
 
-        private readonly bool silentMode = false;
+        private readonly bool silentMode = true;
 
         public DumperMiddleware(AppFunc next)
         {

@@ -6,7 +6,7 @@
     {
         public void Configuration(IAppBuilder app)
         {
-            var config = Owin.ApiGateway.Configuration.Configuration.Load();
+            var config = Owin.ApiGateway.Configuration.Configuration.Current;
 
             app.UseConfigurationManager(config);
             app.UseCache(new MemoryCacheProvider());

@@ -86,9 +86,9 @@
     <Compile Include="RoutingConditions\ConditionResult.cs" />
     <Compile Include="RoutingConditions\RequestPathAndQueryCondition.cs" />
     <Compile Include="RoutingConditions\RoutingCondition.cs" />
-    <Compile Include="RouteConfiguration.cs" />
+    <Compile Include="Configuration\RouteConfiguration.cs" />
     <Compile Include="RoutingConditions\SoapActionCondition.cs" />
-    <Compile Include="RoutingEndpoint.cs" />
+    <Compile Include="Configuration\RoutingEndpoint.cs" />
     <Compile Include="RoutingManagerMiddleware.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Tools.cs" />

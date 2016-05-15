@@ -6,6 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using Owin.ApiGateway.Configuration;
     using Owin.ApiGateway.Exceptions;
 
     using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
@@ -47,7 +48,7 @@
                     throw new EndpointNotFountException(routeConfiguration.EndpointId);
                 }
 
-                var endpointUriBuilder = new StringBuilder(endpoint.Uri);
+                var endpointUriBuilder = new StringBuilder(endpoint.Urls.First());
                 if (conditionCaptureGroups.Count > 0)
                 {
                     foreach (var captureGroups in conditionCaptureGroups)

@@ -7,7 +7,9 @@
 
     public class Configuration
     {
-        public Configuration()
+        public static Configuration Current { get; set; }
+
+        private Configuration()
         {
             this.Endpoints = new List<RoutingEndpoint>();
             this.Routes = new List<RouteConfiguration>();
@@ -21,7 +23,10 @@
 
         public void AddEndpoint(string endpointId, string endpointUri)
         {
-            this.Endpoints.Add(new RoutingEndpoint { Id = endpointId, Uri = endpointUri });
+            var re = new RoutingEndpoint { Id = endpointId };
+            re.Urls.Add(endpointUri);
+
+            this.Endpoints.Add(re);
         }
 
         public void AddRoute(RoutingCondition condition, string endpointId)
@@ -33,7 +38,9 @@
         {
             //IConfigurationProvider configurationProvider = new YamlConfigurationProvider("Configuration.yaml");
             IConfigurationProvider configurationProvider = new XmlConfigurationProvider("Configuration.xml");
-            return configurationProvider.Load();
-        }
+            Current = configurationProvider.Load();
+
+            return Current;
+   ;     }
     }
 }
