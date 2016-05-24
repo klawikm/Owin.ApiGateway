@@ -1,9 +1,12 @@
 ﻿namespace Owin.ApiGateway
 {
     using System;
+    using System.Collections.Generic;
+    using System.Configuration;
 
     using Microsoft.Owin.Hosting;
 
+    using Owin.ApiGateway.Configuration;
     using Owin.ApiGateway.Configuration.Providers;
 
     internal class Program
@@ -12,13 +15,23 @@
         {
             var config = Owin.ApiGateway.Configuration.Configuration.Load();
 
-            //config.Endpoints[0].Urls.Add("testur1");
-            //config.Endpoints[0].Urls.Add("testur3");
+            //var e = config.Endpoints[0];
+            //e.Instances = new Instances();
+            //e.Instances.Instance = new List<Instance>();
+            //e.Instances.Instance.Add(new Instance {Status = InstanceStatuses.Up, Url = "asdasdasd"});
 
             //XmlConfigurationProvider s = new XmlConfigurationProvider("test.xml");
             //s.Save(config);
 
-            var baseUrl = string.Format("http://localhost:{0}/", config.Port);
+            int port = config.Port;
+            if (ConfigurationManager.AppSettings["portNumber"] != null)
+            {
+                port = Int32.Parse(ConfigurationManager.AppSettings["portNumber"]);
+                Console.WriteLine("Using port number from App.Config ({0}) not from main configuration ({1}).", port, config.Port);
+            }
+
+
+            var baseUrl = string.Format("http://localhost:{0}/", port);
 
             using (var server = WebApp.Start<Startup>(new StartOptions(baseUrl)))
             {

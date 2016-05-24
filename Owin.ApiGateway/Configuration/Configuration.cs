@@ -1,7 +1,9 @@
 ﻿namespace Owin.ApiGateway.Configuration
 {
     using System.Collections.Generic;
+    using System.Web.Hosting;
 
+    using Owin.ApiGateway.Common;
     using Owin.ApiGateway.Configuration.Providers;
     using Owin.ApiGateway.RoutingConditions;
 
@@ -24,8 +26,9 @@
         public void AddEndpoint(string endpointId, string endpointUri)
         {
             var re = new RoutingEndpoint { Id = endpointId };
-            re.Urls.Add(endpointUri);
 
+            re.Instances.Instance.Add(new Instance {Url = endpointUri, Status = InstanceStatuses.Up });
+            
             this.Endpoints.Add(re);
         }
 
@@ -36,11 +39,26 @@
 
         public static Configuration Load()
         {
-            //IConfigurationProvider configurationProvider = new YamlConfigurationProvider("Configuration.yaml");
-            IConfigurationProvider configurationProvider = new XmlConfigurationProvider("Configuration.xml");
-            Current = configurationProvider.Load();
+            /*
+            var configurationFileName = "Configuration.xml";
 
+            // fix path is APIGateway is hosted in IIS
+            if (HostingEnvironment.IsHosted)
+            {
+                configurationFileName = HostingEnvironment.MapPath("~/" + configurationFileName);
+            }
+            
+            IConfigurationStorageService configurationStorageService = new LocalFilesystemConfigurationStorageService(configurationFileName);
+            //IConfigurationProvider configurationProvider = new YamlConfigurationProvider("Configuration.yaml");
+            IConfigurationProvider configurationProvider = new XmlConfigurationProvider(configurationStorageService);
+            Current = configurationProvider.Load();
+            */
+
+            var dbConfigStorageService = new DbConfigurationStorageService.ConfigurationStorageService();
+            IConfigurationProvider configurationProvider2 = new XmlConfigurationProvider(dbConfigStorageService);
+            Current = configurationProvider2.Load();
+            
             return Current;
-   ;     }
+        }
     }
 }

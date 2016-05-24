@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.SelfHost", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.IisHost", "Owin.ApiGateway.IisHost\Owin.ApiGateway.IisHost.csproj", "{912B5A6C-62EA-4346-A78B-5A8B31B9EC59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.Common", "Owin.ApiGateway.Common\Owin.ApiGateway.Common.csproj", "{CFC4B131-733F-4D32-BFF4-0242F6FA599A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.DbConfigurationStorageService", "Owin.ApiGateway.DbConfigurationStorageService\Owin.ApiGateway.DbConfigurationStorageService.csproj", "{8DEA984E-3D53-487B-9ABD-3BAC1CCF9F57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.BusProvider.Rebus", "Owin.ApiGateway.BusProvider.Rebus\Owin.ApiGateway.BusProvider.Rebus.csproj", "{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +39,18 @@ Global
 		{912B5A6C-62EA-4346-A78B-5A8B31B9EC59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{912B5A6C-62EA-4346-A78B-5A8B31B9EC59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{912B5A6C-62EA-4346-A78B-5A8B31B9EC59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC4B131-733F-4D32-BFF4-0242F6FA599A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC4B131-733F-4D32-BFF4-0242F6FA599A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC4B131-733F-4D32-BFF4-0242F6FA599A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC4B131-733F-4D32-BFF4-0242F6FA599A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DEA984E-3D53-487B-9ABD-3BAC1CCF9F57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DEA984E-3D53-487B-9ABD-3BAC1CCF9F57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DEA984E-3D53-487B-9ABD-3BAC1CCF9F57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DEA984E-3D53-487B-9ABD-3BAC1CCF9F57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

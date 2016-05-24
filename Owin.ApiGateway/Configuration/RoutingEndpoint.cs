@@ -7,11 +7,11 @@
     {
         public RoutingEndpoint()
         {
-            this.Urls = new List<string>();
+            this.Instances = new Instances();
         }
 
         public string Id { get; set; }
 
-        public List<string> Urls { get; private set; }
+        public Instances Instances { get; set; }
     }
 }

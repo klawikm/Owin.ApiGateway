@@ -98,6 +98,10 @@
     <Compile Include="Startup1.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Owin.ApiGateway.Common\Owin.ApiGateway.Common.csproj">
+      <Project>{cfc4b131-733f-4d32-bff4-0242f6fa599a}</Project>
+      <Name>Owin.ApiGateway.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Owin.ApiGateway\Owin.ApiGateway.csproj">
       <Project>{8c0ab50f-f7b5-4d3e-9b47-aa21c4c27c48}</Project>
       <Name>Owin.ApiGateway</Name>

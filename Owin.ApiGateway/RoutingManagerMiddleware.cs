@@ -48,7 +48,7 @@
                     throw new EndpointNotFountException(routeConfiguration.EndpointId);
                 }
 
-                var endpointUriBuilder = new StringBuilder(endpoint.Urls.First());
+                var endpointUriBuilder = new StringBuilder(endpoint.Instances.Instance.First(i => i.Status == InstanceStatuses.Up).Url);
                 if (conditionCaptureGroups.Count > 0)
                 {
                     foreach (var captureGroups in conditionCaptureGroups)

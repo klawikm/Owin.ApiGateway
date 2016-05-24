@@ -3,6 +3,7 @@
     using System;
     using System.IO;
 
+    using Owin.ApiGateway.Common;
     using Owin.ApiGateway.RoutingConditions;
 
     using YamlDotNet.Serialization;
@@ -10,11 +11,11 @@
 
     public class YamlConfigurationProvider : IConfigurationProvider
     {
-        private readonly string configurationFileName;
+        private readonly IConfigurationStorageService storageService;
 
-        public YamlConfigurationProvider(string configurationFileName)
+        public YamlConfigurationProvider(IConfigurationStorageService storageService)
         {
-            this.configurationFileName = configurationFileName;
+            this.storageService = storageService;
         }
 
         public Configuration Load()
@@ -26,7 +27,7 @@
             deserializer.RegisterTagMapping("tag:yaml.org,2002:RequestPathAndQueryCondition", typeof(RequestPathAndQueryCondition));
             deserializer.RegisterTagMapping("tag:yaml.org,2002:AlwaysMatchingCondition", typeof(AlwaysMatchingCondition));
 
-            var configurationString = File.ReadAllText(this.configurationFileName);
+            var configurationString = this.storageService.Read();
             using (var sr = new StringReader(configurationString))
             {
                 var configurationFromFile = deserializer.Deserialize<Configuration>(sr);

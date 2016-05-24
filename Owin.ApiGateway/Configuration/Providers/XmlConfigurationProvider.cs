@@ -6,25 +6,21 @@
     using System.Web.Hosting;
     using System.Xml.Serialization;
 
+    using Owin.ApiGateway.Common;
+
     public class XmlConfigurationProvider : IConfigurationProvider
     {
-        private readonly string configurationFileName;
+        private readonly IConfigurationStorageService storageService;
 
-        public XmlConfigurationProvider(string configurationFileName)
+        public XmlConfigurationProvider(IConfigurationStorageService storageService)
         {
-            this.configurationFileName = configurationFileName;
-
-            // fix path is APIGateway is hosted in IIS
-            if (HostingEnvironment.IsHosted)
-            {
-                this.configurationFileName = HostingEnvironment.MapPath("~/" + this.configurationFileName);
-            }
+            this.storageService = storageService;
         }
 
         public Configuration Load()
         {
             var s = new XmlSerializer(typeof(Configuration));
-            var configurationString = File.ReadAllText(this.configurationFileName);
+            var configurationString = this.storageService.Read();
             using (var sr = new StringReader(configurationString))
             {
                 return (Configuration)s.Deserialize(sr);
@@ -40,7 +36,7 @@
                 s.Serialize(sr, configuration);
             }
 
-            File.WriteAllText(this.configurationFileName, sb.ToString());
+            this.storageService.Write(sb.ToString());
         }
         
         public EventHandler<ConfigurationChangedEventArgs> ConfigurationChangedHandler
