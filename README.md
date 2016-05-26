@@ -38,6 +38,9 @@ version 0.0.1 - I've just started :-)
 * Routing configuration stored in XML or YAML file
 * API Gateway can run as "self host" but also can be hosted in IIS
 * Response caching (currently only via MemoryCache but you can also inject your own cache provider) 
+* Configuration can be stored in central store e.g. in SQL database. This solution is required when API Gateway is running in cluster
+* WEB API providing CRUD operations for configuration management
+* Configuration synchronization between nodes in the cluster (Publish-Subscribe pattern implemented using Rebus: https://github.com/rebus-org/Rebus)
 
 ## Road map
 
