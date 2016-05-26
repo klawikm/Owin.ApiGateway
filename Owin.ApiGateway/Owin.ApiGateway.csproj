@@ -123,8 +123,9 @@
     <Compile Include="Configuration\Providers\XmlConfigurationProvider.cs" />
     <Compile Include="Configuration\Providers\YamlConfigurationProvider.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
+    <Compile Include="Exceptions\HealthyInstanceNotFoundException.cs" />
     <Compile Include="Exceptions\MatchingRoutingConditionNotFoundException.cs" />
-    <Compile Include="Exceptions\EndpointNotFountException.cs" />
+    <Compile Include="Exceptions\EndpointNotFoundException.cs" />
     <Compile Include="Exceptions\PipelineConfigurationException.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />

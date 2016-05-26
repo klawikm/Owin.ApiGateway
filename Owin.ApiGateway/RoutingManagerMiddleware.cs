@@ -16,6 +16,8 @@
         private readonly AppFunc next;
 
         private readonly Configuration.Configuration configuration;
+
+        private static Dictionary<string, string> _endpointId2LastUrlTemplate = new Dictionary<string, string>();
         
 
         public RoutingManagerMiddleware(AppFunc next, Configuration.Configuration configuration)
@@ -45,10 +47,43 @@
 
                 if (endpoint == null)
                 {
-                    throw new EndpointNotFountException(routeConfiguration.EndpointId);
+                    throw new EndpointNotFoundException(routeConfiguration.EndpointId);
                 }
 
-                var endpointUriBuilder = new StringBuilder(endpoint.Instances.Instance.First(i => i.Status == InstanceStatuses.Up).Url);
+                string endpointUrlTemplateString = null;
+
+                if (_endpointId2LastUrlTemplate.ContainsKey(endpoint.Id))
+                {
+                    string lastUriTemplate = _endpointId2LastUrlTemplate[endpoint.Id];
+                    int indexOfLastUri = endpoint.Instances.Instance.FindIndex(i => i.Url.Equals(lastUriTemplate));
+
+                    if (indexOfLastUri != -1 && (indexOfLastUri + 1) < endpoint.Instances.Instance.Count)
+                    {
+                        for (int j = indexOfLastUri + 1; j < endpoint.Instances.Instance.Count; j++)
+                        {
+                            if (endpoint.Instances.Instance[j].Status == InstanceStatuses.Up)
+                            {
+                                endpointUrlTemplateString = endpoint.Instances.Instance[j].Url;
+                            }
+                        }
+                    }
+                }
+                
+                if (string.IsNullOrEmpty(endpointUrlTemplateString))
+                {
+                    endpointUrlTemplateString = endpoint.Instances.Instance.First(i => i.Status == InstanceStatuses.Up).Url;
+                }
+
+                if (string.IsNullOrEmpty(endpointUrlTemplateString))
+                {
+                    _endpointId2LastUrlTemplate.Remove(endpoint.Id);
+
+                    throw new HealthyInstanceNotFoundException(endpoint.Id);
+                }
+
+                _endpointId2LastUrlTemplate[endpoint.Id] = endpointUrlTemplateString;
+
+                var endpointUriBuilder = new StringBuilder(endpointUrlTemplateString);
                 if (conditionCaptureGroups.Count > 0)
                 {
                     foreach (var captureGroups in conditionCaptureGroups)
