@@ -41,6 +41,7 @@ version 0.0.1 - I've just started :-)
 * Configuration can be stored in central store e.g. in SQL database. This solution is required when API Gateway is running in cluster
 * WEB API providing CRUD operations for configuration management
 * Configuration synchronization between nodes in the cluster (Publish-Subscribe pattern implemented using Rebus: https://github.com/rebus-org/Rebus)
+* Load balancing (round robin)
 
 ## Road map
 
