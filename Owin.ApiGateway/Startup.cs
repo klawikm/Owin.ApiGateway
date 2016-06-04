@@ -5,6 +5,7 @@
     using System.Net.Http.Formatting;
     using System.Reflection;
     using System.Threading.Tasks;
+    using System.Web.Hosting;
     using System.Web.Http;
     using System.Web.Http.Routing;
 
@@ -45,7 +46,8 @@
             // Register the WebAPI to the pipeline. It is required for Configuration WebAPI 
             app.UseWebApi(configuration);
 
-            var config = Owin.ApiGateway.Configuration.Configuration.Current;
+            var config = Owin.ApiGateway.Configuration.Configuration.Current ?? Owin.ApiGateway.Configuration.Configuration.Load();
+
             app.UseConfigurationManager(config);
             app.UseCache(new MemoryCacheProvider());
             app.UseRoutingManagerMiddleware(config);
@@ -75,8 +77,9 @@
             kernel.Bind<IConfigurationStorageService>().To<ConfigurationStorageService>();
             kernel.Bind<Configuration.IConfigurationProvider>().To<XmlConfigurationProvider>();
 
-            IBus bus = kernel.Get<IBus>();
-            ConfigureBus(bus);
+            // TODO: Uncomment lines below before using Configuration API for changing configuration 
+            // IBus bus = kernel.Get<IBus>();
+            // ConfigureBus(bus); 
 
             return kernel;
         }
@@ -84,8 +87,18 @@
         private static void ConfigureBus(IBus bus)
         {
             var config = Owin.ApiGateway.Configuration.Configuration.Current;
+            string gatewayId = null;
 
-            var gatewayId = string.Format("{0} ({1})", Assembly.GetEntryAssembly().GetName().Name, System.Environment.MachineName);
+            if (HostingEnvironment.IsHosted)
+            {
+                string applicationAlias = HostingEnvironment.ApplicationVirtualPath;
+                string applicationName = applicationAlias.Substring(1);
+                gatewayId = string.Format("{0} ({1})", applicationName, System.Environment.MachineName);
+            }
+            else
+            {
+                gatewayId = string.Format("{0} ({1})", Assembly.GetEntryAssembly().GetName().Name, System.Environment.MachineName);
+            }
 
             if (ConfigurationManager.AppSettings["gatewayId"] != null)
             {

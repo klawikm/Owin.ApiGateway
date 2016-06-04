@@ -39,7 +39,6 @@
 
         public static Configuration Load()
         {
-            /*
             var configurationFileName = "Configuration.xml";
             
             // fix path is APIGateway is hosted in IIS
@@ -51,12 +50,13 @@
             IConfigurationStorageService configurationStorageService = new LocalFilesystemConfigurationStorageService(configurationFileName);
             //IConfigurationProvider configurationProvider = new YamlConfigurationProvider("Configuration.yaml");
             IConfigurationProvider configurationProvider = new XmlConfigurationProvider(configurationStorageService);
-            Current = configurationProvider.Load(); */
+            Current = configurationProvider.Load(); 
             
-
+            /*
             var dbConfigStorageService = new DbConfigurationStorageService.ConfigurationStorageService();
             IConfigurationProvider configurationProvider2 = new XmlConfigurationProvider(dbConfigStorageService);
             Current = configurationProvider2.Load();
+            */
             
             return Current;
         }

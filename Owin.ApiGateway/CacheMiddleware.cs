@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Net.Http.Headers;
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
@@ -55,11 +56,15 @@
                     // Console.WriteLine("Cache key: {0}", cacheKey);
 
                     // check if we have request and response in the cache
-                    var cachedResponseBody = this.cache.GetFromCache(cacheKey) as string;
-                    if (cachedResponseBody != null)
+                    var responseCacheItem = this.cache.GetFromCache(cacheKey) as ResponseCacheItem;
+                    if (responseCacheItem != null)
                     {
-                        var bytesFromCachedResponse = Encoding.UTF8.GetBytes(cachedResponseBody);
-                        context.Response.Body.Write(bytesFromCachedResponse, 0, bytesFromCachedResponse.Length);
+                        // Headers that will be sent to the client who called API Gateway
+                        Tools.SetResponseHeaders(responseCacheItem.ResponseHeaders, responseCacheItem.ResponseContentHeaders, context.Response.Headers);
+
+                        //var bytesFromCachedResponseBody = Encoding.UTF8.GetBytes(responseCacheItem.ResponseBody);
+                        var bytesFromCachedResponseBody = responseCacheItem.ResponseBodyArray;
+                        context.Response.Body.Write(bytesFromCachedResponseBody, 0, bytesFromCachedResponseBody.Length);
 
                         return;
                     }
@@ -75,11 +80,18 @@
                     await this.next(env);
 
                     responseBuffer.Position = 0;
-                    var responseBufferReader = new StreamReader(responseBuffer);
-                    var responseBody = await responseBufferReader.ReadToEndAsync();
+                    //var responseBufferReader = new StreamReader(responseBuffer);
+                    // var responseBody = await responseBufferReader.ReadToEndAsync();
+                    var responseBodyArray = responseBuffer.ToArray();
 
                     // write reponse to cache
-                    this.cache.SetInCache(cacheKey, responseBody, new TimeSpan(hours: 0, minutes: cacheConfig.ExpirationTimeInMinutes, seconds: 0));
+                    responseCacheItem = new ResponseCacheItem
+                                        {
+                                            ResponseBodyArray = responseBodyArray,
+                                            ResponseHeaders = env[Tools.ResponseHeadersCollectionEnvKey] as HttpResponseHeaders,
+                                            ResponseContentHeaders = env[Tools.ResponseContentHeadersCollectionEnvKey] as HttpContentHeaders
+                                        };
+                    this.cache.SetInCache(cacheKey, responseCacheItem, new TimeSpan(hours: 0, minutes: cacheConfig.ExpirationTimeInMinutes, seconds: 0));
 
                     // We need to do this so that the response we buffered is flushed out to the client application.
                     responseBuffer.Position = 0;

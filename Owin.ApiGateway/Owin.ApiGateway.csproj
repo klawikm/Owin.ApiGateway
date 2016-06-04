@@ -136,6 +136,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyMiddleware.cs" />
     <Compile Include="ProxyOptions.cs" />
+    <Compile Include="ResponseCacheItem.cs" />
     <Compile Include="RoutingConditions\AlwaysMatchingCondition.cs" />
     <Compile Include="RoutingConditions\ConditionResult.cs" />
     <Compile Include="RoutingConditions\RequestPathAndQueryCondition.cs" />

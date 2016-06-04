@@ -24,6 +24,8 @@
             try
             {
                 this.LoadRouteConfiguration(env);
+
+                await this.next(env);
             }
             catch (Exception ex)
             {
@@ -31,8 +33,7 @@
 
                 throw;
             }
-
-            await this.next(env);
+            
         }
 
         private void LoadRouteConfiguration(IDictionary<string, object> env)
