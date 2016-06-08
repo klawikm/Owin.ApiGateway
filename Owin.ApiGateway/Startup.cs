@@ -9,6 +9,11 @@
     using System.Web.Http;
     using System.Web.Http.Routing;
 
+    using Microsoft.Owin;
+    using Microsoft.Owin.FileSystems;
+    using Microsoft.Owin.StaticFiles;
+    using Microsoft.Owin.StaticFiles.ContentTypes;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
 
@@ -46,6 +51,12 @@
             // Register the WebAPI to the pipeline. It is required for Configuration WebAPI 
             app.UseWebApi(configuration);
 
+            var options = new FileServerOptions {
+                                  RequestPath = new PathString("/admin"),
+                                  FileSystem = new PhysicalFileSystem(@".\public"),
+                                };
+            app.UseFileServer(options);
+            
             var config = Owin.ApiGateway.Configuration.Configuration.Current ?? Owin.ApiGateway.Configuration.Configuration.Load();
 
             app.UseConfigurationManager(config);
