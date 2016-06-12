@@ -9,6 +9,8 @@
     using System.Web.Http;
     using System.Web.Http.Routing;
 
+    using global::Common.Logging;
+
     using Microsoft.Owin;
     using Microsoft.Owin.FileSystems;
     using Microsoft.Owin.StaticFiles;
@@ -27,6 +29,7 @@
     using Owin.ApiGateway.Common.Messages;
     using Owin.ApiGateway.Configuration.Providers;
     using Owin.ApiGateway.DbConfigurationStorageService;
+    using Owin.ApiGateway.HealthMonitor;
 
     public class Startup
     {
@@ -39,6 +42,9 @@
 
         public void Configuration(IAppBuilder app)
         {
+            var logger = LogManager.GetLogger(this.GetType());
+            logger.Info("Starting...");
+
             // Setup WebAPI configuration  
             var configuration = new HttpConfiguration();
             configuration.Routes.Add("API Default", new HttpRoute("api/{Controller}/{action}"));
@@ -59,10 +65,15 @@
             
             var config = Owin.ApiGateway.Configuration.Configuration.Current ?? Owin.ApiGateway.Configuration.Configuration.Load();
 
-            app.UseConfigurationManager(config);
-            app.UseCache(new MemoryCacheProvider());
-            app.UseRoutingManagerMiddleware(config);
-            app.UseProxy(new ProxyOptions { VerboseMode = false });
+            app.UseConfigurationManager(config, logger);
+            app.UseCache(new MemoryCacheProvider(), logger);
+            app.UseRoutingManagerMiddleware(logger, config);
+            app.UseProxy(logger, new ProxyOptions { VerboseMode = false });
+
+            // configure and start endpoints health checking
+            IServiceProbe serviceProbe = new ServiceProbe();
+            serviceProbe.Initialize(this.GetCurrentConfiguration, logger);
+            serviceProbe.Start();
 
             configuration.Formatters.Clear();
             configuration.Formatters.Add(new JsonMediaTypeFormatter());
@@ -71,6 +82,11 @@
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
+        }
+
+        private Configuration.Configuration GetCurrentConfiguration()
+        {
+            return Owin.ApiGateway.Configuration.Configuration.Current ?? Owin.ApiGateway.Configuration.Configuration.Load();
         }
 
         private static StandardKernel CreateKernel()

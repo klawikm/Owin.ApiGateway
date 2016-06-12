@@ -8,6 +8,8 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using global::Common.Logging;
+
     using Microsoft.Owin;
 
     using Owin.ApiGateway.Cache;
@@ -23,10 +25,13 @@
 
         private readonly ICache cache;
 
-        public CacheMiddleware(AppFunc next, ICache cache)
+        private readonly ILog logger;
+
+        public CacheMiddleware(AppFunc next, ICache cache, ILog logger)
         {
             this.next = next;
             this.cache = cache;
+            this.logger = logger;
         }
 
         public async Task Invoke(IDictionary<string, object> env)
@@ -103,6 +108,7 @@
             }
             catch (Exception ex)
             {
+                this.logger.ErrorFormat("Exception in CacheMiddleware.", ex);
                 Tools.ShowExceptionDetails(ex);
 
                 throw;

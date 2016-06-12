@@ -36,6 +36,22 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net1213, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Log4Net1213.3.3.1\lib\net40\Common.Logging.Log4Net1213.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
@@ -120,6 +136,9 @@
     <Compile Include="CacheMiddleware.cs" />
     <Compile Include="Cache\ICache.cs" />
     <Compile Include="Cache\MemoryCacheProvider.cs" />
+    <Compile Include="CircuitBreaker\CircuitBreaker.cs" />
+    <Compile Include="CircuitBreaker\CircuitBreakerStateEnum.cs" />
+    <Compile Include="CircuitBreaker\ICircuitBreakerStateStore.cs" />
     <Compile Include="ConfigurationManagerMiddleware.cs" />
     <Compile Include="Configuration\CacheConfiguration.cs" />
     <Compile Include="Configuration\Configuration.cs" />
@@ -138,6 +157,8 @@
     <Compile Include="Exts.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="FakeBus.cs" />
+    <Compile Include="HealthMonitor\IServiceProbe.cs" />
+    <Compile Include="HealthMonitor\ServiceProbe.cs" />
     <Compile Include="Models\AddInstanceRequest.cs" />
     <Compile Include="Models\RemoveInstanceRequest.cs" />
     <Compile Include="Models\UpdateInstanceRequest.cs" />

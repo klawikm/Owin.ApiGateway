@@ -6,6 +6,8 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using global::Common.Logging;
+
     using Owin.ApiGateway.Configuration;
     using Owin.ApiGateway.Exceptions;
 
@@ -17,13 +19,16 @@
 
         private readonly Configuration.Configuration configuration;
 
+        private readonly ILog logger;
+
         private static Dictionary<string, string> _endpointId2LastUrlTemplate = new Dictionary<string, string>();
         
 
-        public RoutingManagerMiddleware(AppFunc next, Configuration.Configuration configuration)
+        public RoutingManagerMiddleware(AppFunc next, Configuration.Configuration configuration, ILog logger)
         {
             this.next = next;
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         public async Task Invoke(IDictionary<string, object> env)
@@ -96,6 +101,7 @@
             }
             catch (Exception ex)
             {
+                this.logger.ErrorFormat("Exception in RoutingManagerMiddleware", ex);
                 Tools.ShowExceptionDetails(ex);
 
                 throw;

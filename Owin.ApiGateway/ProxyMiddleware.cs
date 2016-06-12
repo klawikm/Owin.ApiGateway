@@ -10,6 +10,8 @@
     using System.Threading.Tasks;
     using System.Web.Hosting;
 
+    using global::Common.Logging;
+
     using Owin.ApiGateway.Exceptions;
 
     using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
@@ -20,10 +22,13 @@
 
         private readonly ProxyOptions options;
 
-        public ProxyMiddleware(AppFunc next, ProxyOptions options)
+        private readonly ILog logger;
+
+        public ProxyMiddleware(AppFunc next, ILog logger, ProxyOptions options)
         {
             this.next = next;
             this.options = options;
+            this.logger = logger;
         }
 
         public async Task Invoke(IDictionary<string, object> env)
@@ -98,6 +103,7 @@
             }
             catch (Exception ex)
             {
+                this.logger.ErrorFormat("Exception in ProxyMiddleware", ex);
                 Tools.ShowExceptionDetails(ex);
 
                 throw;

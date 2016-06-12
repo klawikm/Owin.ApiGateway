@@ -6,6 +6,8 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using global::Common.Logging;
+
     using Microsoft.Owin;
 
     using AppFunc = System.Func<System.Collections.Generic.IDictionary<string, object>, System.Threading.Tasks.Task>;
@@ -16,10 +18,13 @@
 
         private readonly Configuration.Configuration configuration;
 
-        public ConfigurationManagerMiddleware(AppFunc next, Configuration.Configuration configuration)
+        private readonly ILog logger;
+
+        public ConfigurationManagerMiddleware(AppFunc next, Configuration.Configuration configuration, ILog logger)
         {
             this.next = next;
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         public async Task Invoke(IDictionary<string, object> env)
@@ -53,6 +58,7 @@
             }
             catch (Exception ex)
             {
+                this.logger.ErrorFormat("Exception in ConfigurationManagerMiddleware", ex);
                 Tools.ShowExceptionDetails(ex);
 
                 throw;
