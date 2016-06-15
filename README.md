@@ -42,6 +42,7 @@ version 0.0.1 - I've just started :-)
 * WEB API providing CRUD operations for configuration management
 * Configuration synchronization between nodes in the cluster (Publish-Subscribe pattern implemented using Rebus: https://github.com/rebus-org/Rebus)
 * Load balancing (round robin)
+* Health checking / monitoring
 
 ## Road map
 
