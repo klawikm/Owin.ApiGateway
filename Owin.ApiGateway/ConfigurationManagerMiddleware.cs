@@ -16,14 +16,14 @@
     {
         private readonly AppFunc next;
 
-        private readonly Configuration.Configuration configuration;
+        private readonly Func<Configuration.Configuration> configurationProvider;
 
         private readonly ILog logger;
 
-        public ConfigurationManagerMiddleware(AppFunc next, Configuration.Configuration configuration, ILog logger)
+        public ConfigurationManagerMiddleware(AppFunc next, Func<Configuration.Configuration> configurationProvider, ILog logger)
         {
             this.next = next;
-            this.configuration = configuration;
+            this.configurationProvider = configurationProvider;
             this.logger = logger;
         }
 
@@ -68,7 +68,8 @@
 
         private bool LoadRouteConfiguration(IDictionary<string, object> env)
         {
-            foreach (var routeConfiguration in this.configuration.Routes)
+            var configuration = this.configurationProvider();
+            foreach (var routeConfiguration in configuration.Routes)
             {
                 var conditionResult = routeConfiguration.Condition.Check(env);
                 if (conditionResult.Success)

@@ -11,15 +11,26 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Administration panel for Owin.ApiGateway</h1>
+    <div class="jumbotron">
+        <h1>Owin.ApiGateway</h1>
+    </div>
 
-<h2>Configuration API</h2>
+    <h2>Configuration API</h2>
+    <div>Get current configuration (GET)</div>
+    <a id="getCurrentConfig"></a>
+    <div>Override current configuration (POST)</div>
+    <a id="overrideCurrentConfig"></a>
+    <div>Add service instance (POST)</div>
+    <a id="addServiceInstance"></a>
+    <div>Remove service instance (DEL)</div>
+    <a id="removeServiceInstance"></a>
+    <div>Update service instance (PUT)</div>
+    <a id="updateServiceInstance"></a>
 
     <h2>Examples</h2>
-    <ul id="examples_ul">
-    </ul>
+    <ul id="examples_ul"></ul>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="js/jquery-2.2.3.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>

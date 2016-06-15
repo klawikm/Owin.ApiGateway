@@ -1,14 +1,16 @@
 ﻿namespace Owin.ApiGateway
 {
+    using System;
+
     using global::Common.Logging;
 
     using Owin.ApiGateway.Cache;
 
     public static class Exts
     {
-        public static void UseConfigurationManager(this IAppBuilder app, Configuration.Configuration configuration, ILog logger)
+        public static void UseConfigurationManager(this IAppBuilder app, Func<Configuration.Configuration> configurationProvider, ILog logger)
         {
-            app.Use<ConfigurationManagerMiddleware>(configuration, logger);
+            app.Use<ConfigurationManagerMiddleware>(configurationProvider, logger);
         }
 
         public static void UseCache(this IAppBuilder app, ICache cache, ILog logger)
@@ -16,9 +18,9 @@
             app.Use<CacheMiddleware>(cache, logger);
         }
 
-        public static void UseRoutingManagerMiddleware(this IAppBuilder app, ILog logger, Configuration.Configuration configuration)
+        public static void UseRoutingManagerMiddleware(this IAppBuilder app, ILog logger, Func<Configuration.Configuration> configurationProvider)
         {
-            app.Use<RoutingManagerMiddleware>(configuration, logger);
+            app.Use<RoutingManagerMiddleware>(configurationProvider, logger);
         }
 
         public static void UseProxy(this IAppBuilder app, ILog logger, ProxyOptions options = null)

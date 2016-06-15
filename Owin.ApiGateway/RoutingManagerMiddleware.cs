@@ -17,17 +17,17 @@
     {
         private readonly AppFunc next;
 
-        private readonly Configuration.Configuration configuration;
+        private readonly Func<Configuration.Configuration> configurationProvider;
 
         private readonly ILog logger;
 
         private static Dictionary<string, string> _endpointId2LastUrlTemplate = new Dictionary<string, string>();
         
 
-        public RoutingManagerMiddleware(AppFunc next, Configuration.Configuration configuration, ILog logger)
+        public RoutingManagerMiddleware(AppFunc next, Func<Configuration.Configuration> configurationProvider, ILog logger)
         {
             this.next = next;
-            this.configuration = configuration;
+            this.configurationProvider = configurationProvider;
             this.logger = logger;
         }
 
@@ -48,7 +48,8 @@
                     throw new PipelineConfigurationException(string.Format(Tools.PossibleLackOfConfigurationManagerInPipelineExceptionMessageTemplate, Tools.ConditionCaptureGroupsEnvKey));
                 }
 
-                var endpoint = this.configuration.Endpoints.FirstOrDefault(e => e.Id.Equals(routeConfiguration.EndpointId));
+                var configuration = this.configurationProvider();
+                var endpoint = configuration.Endpoints.FirstOrDefault(e => e.Id.Equals(routeConfiguration.EndpointId));
 
                 if (endpoint == null)
                 {

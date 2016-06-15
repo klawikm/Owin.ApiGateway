@@ -65,9 +65,9 @@
             
             var config = Owin.ApiGateway.Configuration.Configuration.Current ?? Owin.ApiGateway.Configuration.Configuration.Load();
 
-            app.UseConfigurationManager(config, logger);
+            app.UseConfigurationManager(this.GetCurrentConfiguration, logger);
             app.UseCache(new MemoryCacheProvider(), logger);
-            app.UseRoutingManagerMiddleware(logger, config);
+            app.UseRoutingManagerMiddleware(logger, this.GetCurrentConfiguration);
             app.UseProxy(logger, new ProxyOptions { VerboseMode = false });
 
             // configure and start endpoints health checking
@@ -113,9 +113,9 @@
 
         private static void ConfigureBus(IBus bus)
         {
-            var config = Owin.ApiGateway.Configuration.Configuration.Current;
+            //var config = Owin.ApiGateway.Configuration.Configuration.Current;
             string gatewayId = null;
-
+             
             if (HostingEnvironment.IsHosted)
             {
                 string applicationAlias = HostingEnvironment.ApplicationVirtualPath;
