@@ -143,6 +143,7 @@
     <Compile Include="Configuration\CacheConfiguration.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Configuration\ConfigurationChangedEventArgs.cs" />
+    <Compile Include="Configuration\HealthCheckConfiguration.cs" />
     <Compile Include="Configuration\Instance.cs" />
     <Compile Include="Configuration\Instances.cs" />
     <Compile Include="Configuration\InstanceStatuses.cs" />

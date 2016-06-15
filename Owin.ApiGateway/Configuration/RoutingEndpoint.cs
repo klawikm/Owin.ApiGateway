@@ -13,5 +13,7 @@
         public string Id { get; set; }
 
         public Instances Instances { get; set; }
+        
+        public HealthCheckConfiguration HealthCheck { get; set; }
     }
 }
