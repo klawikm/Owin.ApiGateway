@@ -148,6 +148,7 @@
     <Compile Include="Configuration\Instances.cs" />
     <Compile Include="Configuration\InstanceStatuses.cs" />
     <Compile Include="Configuration\LocalFilesystemConfigurationStorageService.cs" />
+    <Compile Include="Configuration\LoggerConfiguration.cs" />
     <Compile Include="Configuration\Providers\XmlConfigurationProvider.cs" />
     <Compile Include="Configuration\Providers\YamlConfigurationProvider.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
@@ -160,6 +161,12 @@
     <Compile Include="FakeBus.cs" />
     <Compile Include="HealthMonitor\IServiceProbe.cs" />
     <Compile Include="HealthMonitor\ServiceProbe.cs" />
+    <Compile Include="Logger\BackgroundThreadLogger.cs" />
+    <Compile Include="Logger\IRequestResponseLogger.cs" />
+    <Compile Include="Logger\IRequestResponseLogStoreWriter.cs" />
+    <Compile Include="Logger\LogEntry.cs" />
+    <Compile Include="Logger\LoggerMiddleware.cs" />
+    <Compile Include="Logger\SqlServerRequestResponseLogWriter.cs" />
     <Compile Include="Models\AddInstanceRequest.cs" />
     <Compile Include="Models\RemoveInstanceRequest.cs" />
     <Compile Include="Models\UpdateInstanceRequest.cs" />
@@ -196,6 +203,7 @@
       <Name>Owin.ApiGateway.DbConfigurationStorageService</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

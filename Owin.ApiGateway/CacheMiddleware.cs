@@ -71,6 +71,8 @@
                         var bytesFromCachedResponseBody = responseCacheItem.ResponseBodyArray;
                         context.Response.Body.Write(bytesFromCachedResponseBody, 0, bytesFromCachedResponseBody.Length);
 
+                        env[Tools.IsFromCacheEnvKey] = true;
+
                         return;
                     }
 

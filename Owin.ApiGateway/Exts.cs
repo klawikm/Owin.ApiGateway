@@ -5,7 +5,7 @@
     using global::Common.Logging;
 
     using Owin.ApiGateway.Cache;
-
+    using Logger;
     public static class Exts
     {
         public static void UseConfigurationManager(this IAppBuilder app, Func<Configuration.Configuration> configurationProvider, ILog logger)
@@ -16,6 +16,11 @@
         public static void UseCache(this IAppBuilder app, ICache cache, ILog logger)
         {
             app.Use<CacheMiddleware>(cache, logger);
+        }
+
+        public static void UseRequestResponseLogger(this IAppBuilder app, ILog logger, IRequestResponseLogger requestResponseLogger)
+        {
+            app.Use<LoggerMiddleware>(logger, requestResponseLogger);
         }
 
         public static void UseRoutingManagerMiddleware(this IAppBuilder app, ILog logger, Func<Configuration.Configuration> configurationProvider)

@@ -63,6 +63,8 @@ namespace Owin.ApiGateway.Configuration
 
         public CacheConfiguration Cache { get; set; }
 
+        public LoggerConfiguration Logger { get; set; }
+
         public string EndpointId { get; set; }
     }
 }

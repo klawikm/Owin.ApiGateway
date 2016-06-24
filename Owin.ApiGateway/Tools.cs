@@ -1,5 +1,6 @@
 ﻿namespace Owin.ApiGateway
 {
+    using Microsoft.Owin;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -8,6 +9,8 @@
 
     public static class Tools
     {
+        public const string IsFromCacheEnvKey = "Owin.ApiGateway.IsFromCache";
+
         public const string RouteConfigurationEnvKey = "Owin.ApiGateway.RouteConfiguration";
 
         public const string ConditionCaptureGroupsEnvKey = "Owin.ApiGateway.CaptureGroups";
@@ -33,11 +36,53 @@
                 return false;
             }
 
-            soapAction = requestHeadersDictionary["SOAPAction"].FirstOrDefault();
+            soapAction = requestHeadersDictionary[headerKey].FirstOrDefault();
 
             return true;
         }
-        
+
+        public static bool TryGetSoapAction(IHeaderDictionary requestHeaders, out string soapAction)
+        {
+            var headerKey = "SOAPAction";
+            if (!requestHeaders.ContainsKey(headerKey))
+            {
+                soapAction = null;
+                return false;
+            }
+
+            soapAction = requestHeaders.GetValues(headerKey).FirstOrDefault();
+
+            return true;
+        }
+
+        public static bool TryGetContentEncoding(IHeaderDictionary headers, out string encodingMethod)
+        {
+            var headerKey = "Content-Encoding";
+            if (!headers.ContainsKey(headerKey))
+            {
+                encodingMethod = null;
+                return false;
+            }
+
+            encodingMethod = headers.GetValues(headerKey).FirstOrDefault();
+
+            return true;
+        }
+
+        internal static bool TryGetTransferEncoding(IHeaderDictionary headers, out string transferEncoding)
+        {
+            var headerKey = "Transfer-Encoding";
+            if (!headers.ContainsKey(headerKey))
+            {
+                transferEncoding = null;
+                return false;
+            }
+
+            transferEncoding = headers.GetValues(headerKey).FirstOrDefault();
+
+            return true;
+        }
+
         public static void ShowExceptionDetails(Exception ex)
         {
             Console.WriteLine(ex.GetType().ToString());
@@ -92,6 +137,7 @@
                 }
             }
         }
+
 
     }
 }

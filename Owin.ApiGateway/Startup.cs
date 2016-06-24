@@ -30,7 +30,7 @@
     using Owin.ApiGateway.Configuration.Providers;
     using Owin.ApiGateway.DbConfigurationStorageService;
     using Owin.ApiGateway.HealthMonitor;
-
+    using Logger;
     public class Startup
     {
         private static StandardKernel kernel;
@@ -66,6 +66,11 @@
             var config = Owin.ApiGateway.Configuration.Configuration.Current ?? Owin.ApiGateway.Configuration.Configuration.Load();
 
             app.UseConfigurationManager(this.GetCurrentConfiguration, logger);
+
+            var requestResponseLogStoreWriter = new SqlServerRequestResponseLogWriter(logger);
+            var requestResponseLogger = new BackgroundThreadLogger(requestResponseLogStoreWriter, logger);
+            app.UseRequestResponseLogger(logger, requestResponseLogger);
+
             app.UseCache(new MemoryCacheProvider(), logger);
             app.UseRoutingManagerMiddleware(logger, this.GetCurrentConfiguration);
             app.UseProxy(logger, new ProxyOptions { VerboseMode = false });
