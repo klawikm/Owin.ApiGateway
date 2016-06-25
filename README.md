@@ -43,14 +43,14 @@ version 0.0.1 - I've just started :-)
 * Configuration synchronization between nodes in the cluster (Publish-Subscribe pattern implemented using Rebus: https://github.com/rebus-org/Rebus)
 * Load balancing (round robin)
 * Health checking / monitoring
+* Efficient audit logs. You can save request string, response string and other details like headers, processing time to database. 
 
 ## Road map
 
 1. To implement Circuit Breaker. To learn more about circuit breaker pattern go to (http://martinfowler.com/bliki/CircuitBreaker.html)
-2. To implement efficient audit logs. It will be possible to save request and response body to database
-3. To implement real time monitoring. Solution will send time statistics to time series database e.g. to [Graphite](https://github.com/graphite-project/graphite-web) via [Stastd](https://github.com/etsy/statsd). This will make possible to build monitoring dashboards using [Grafana](http://grafana.org/) tool.
-4. [Azure Service Fabric](https://azure.microsoft.com/en-us/services/service-fabric/) integration. As far as I know there is no available API Gateway solution that acts as access point to Web APIs hosted in Service Fabric.
-5. Integration with OAuth2 (authorization proxy)
+2. To implement real time monitoring. Solution will send time statistics to time series database e.g. to [Graphite](https://github.com/graphite-project/graphite-web) via [Stastd](https://github.com/etsy/statsd). This will make possible to build monitoring dashboards using [Grafana](http://grafana.org/) tool.
+3. [Azure Service Fabric](https://azure.microsoft.com/en-us/services/service-fabric/) integration. As far as I know there is no available API Gateway solution that acts as access point to Web APIs hosted in Service Fabric.
+4. Integration with OAuth2 (authorization proxy)
 
 ## Possible use-cases
 
