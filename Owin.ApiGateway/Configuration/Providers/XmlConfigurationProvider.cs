@@ -38,13 +38,5 @@
 
             this.storageService.Write(sb.ToString());
         }
-        
-        public EventHandler<ConfigurationChangedEventArgs> ConfigurationChangedHandler
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
 }

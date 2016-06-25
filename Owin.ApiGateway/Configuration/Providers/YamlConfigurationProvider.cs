@@ -39,13 +39,5 @@
         {
             throw new NotImplementedException();
         }
-
-        public EventHandler<ConfigurationChangedEventArgs> ConfigurationChangedHandler
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
 }

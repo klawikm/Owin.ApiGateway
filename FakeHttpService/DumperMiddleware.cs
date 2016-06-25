@@ -52,7 +52,7 @@
                 Console.WriteLine("Input stream:");
                 using (var sr = new StreamReader(inStream))
                 {
-                    var requestString = sr.ReadToEnd();
+                    var requestString = await sr.ReadToEndAsync();
                     Console.Write(requestString);
                 }
             }
@@ -60,7 +60,7 @@
             // Send dummy response
             using (var sw = new StreamWriter(outStream))
             {
-                sw.Write("<test>123</test>");
+                await sw.WriteAsync("<test>123</test>");
             }
         }
     }

@@ -77,7 +77,21 @@
 
         public void Dispose()
         {
-            bus.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                if (bus != null)
+                {
+                    bus.Dispose();
+                    bus = null;
+                }
+            }
         }
     }
 }

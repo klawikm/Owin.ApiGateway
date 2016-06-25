@@ -2,6 +2,7 @@
 {
     using System;
 
+    [Serializable]
     public class PipelineConfigurationException : Exception
     {
         public PipelineConfigurationException(string message)

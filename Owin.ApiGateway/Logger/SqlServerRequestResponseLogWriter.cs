@@ -3,6 +3,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Web.Hosting;
@@ -75,6 +76,7 @@ namespace Owin.ApiGateway.Logger
             }
         }
 
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private string GzipDecompress(byte[] responseBytes, bool isChunkedTransferEncoding)
         {
             using (var ms = new MemoryStream())
