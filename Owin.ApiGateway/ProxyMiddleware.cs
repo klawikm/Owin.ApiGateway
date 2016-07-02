@@ -24,11 +24,22 @@
 
         private readonly ILog logger;
 
-        public ProxyMiddleware(AppFunc next, ILog logger, ProxyOptions options)
+        private readonly HttpMessageHandler httpClientMessageHandler;
+
+        /// <summary>
+        /// Initializes ProxyMiddleware. A middleware that sends request to target service, reads reponse from this service and sends it back to pipeline. This middleware should be the 
+        /// last one in pipeline
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="logger">logger used to log warnings, errors and debug messages</param>
+        /// <param name="options">proxy opitions</param>
+        /// <param name="httpClientMessageHandler">if defined this message handler will be used to initialize HttpClient. This parameter is used in unit tests.</param>
+        public ProxyMiddleware(AppFunc next, ILog logger, ProxyOptions options, HttpMessageHandler httpClientMessageHandler = null)
         {
             this.next = next;
             this.options = options;
             this.logger = logger;
+            this.httpClientMessageHandler = httpClientMessageHandler;
         }
 
         public async Task Invoke(IDictionary<string, object> env)
@@ -46,7 +57,18 @@
                     throw new PipelineConfigurationException(string.Format(Tools.PossibleLackOfRoutingManagerInPipelineExceptionMessageTemplate, Tools.RedirectionUriEnvKey));
                 }
 
-                using (var httpClient = new HttpClient())
+                HttpClient httpClient;
+
+                if (this.httpClientMessageHandler == null)
+                {
+                    httpClient = new HttpClient();
+                }
+                else
+                {
+                    httpClient = new HttpClient(this.httpClientMessageHandler, disposeHandler: true);
+                }
+
+                try
                 {
                     using (var request = new HttpRequestMessage(new HttpMethod(requestMethod), requestUri))
                     {
@@ -93,6 +115,13 @@
                             sw.Write("\r\n");
                             sw.Flush();
                         }
+                    }
+                }
+                finally
+                {
+                    if (httpClient != null)
+                    {
+                        httpClient.Dispose();
                     }
                 }
 

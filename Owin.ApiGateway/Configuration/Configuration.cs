@@ -11,7 +11,7 @@
     {
         public static Configuration Current { get; set; }
 
-        private Configuration()
+        public Configuration()
         {
             this.Endpoints = new List<RoutingEndpoint>();
             this.Routes = new List<RouteConfiguration>();

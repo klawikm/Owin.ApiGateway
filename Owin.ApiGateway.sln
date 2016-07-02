@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.DbConfigura
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.BusProvider.Rebus", "Owin.ApiGateway.BusProvider.Rebus\Owin.ApiGateway.BusProvider.Rebus.csproj", "{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.ApiGateway.Tests", "Owin.ApiGateway.Tests\Owin.ApiGateway.Tests.csproj", "{3DD819C5-198F-4B57-A3BA-9CC53DF089EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F5A2437-F789-48D4-B02D-EAB23FB0B34E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DD819C5-198F-4B57-A3BA-9CC53DF089EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DD819C5-198F-4B57-A3BA-9CC53DF089EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DD819C5-198F-4B57-A3BA-9CC53DF089EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DD819C5-198F-4B57-A3BA-9CC53DF089EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
