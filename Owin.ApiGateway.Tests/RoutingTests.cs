@@ -87,17 +87,29 @@
             {
                 var responseHandler = new FakeResponseHandler();
 
-                var responseFromService1 = new HttpResponseMessage(HttpStatusCode.OK);
-                responseFromService1.Content = new StringContent("Hello world from service1");
-                responseHandler.AddFakeResponse(new System.Uri("http://service1.com/requestPath"), responseFromService1);
+                responseHandler.AddFakeResponseGenerator(new System.Uri("http://service1.com/requestPath"), () =>
+                {
+                    var responseFromService1 = new HttpResponseMessage(HttpStatusCode.OK);
+                    responseFromService1.Content = new StringContent("Hello world from service1");
 
-                var responseFromService2 = new HttpResponseMessage(HttpStatusCode.OK);
-                responseFromService2.Content = new StringContent(SuccessfulResponseContentFromService2);
-                responseHandler.AddFakeResponse(new System.Uri("http://service2.com/requestPath"), responseFromService2);
+                    return responseFromService1;
+                });
 
-                var responseFromService3 = new HttpResponseMessage(HttpStatusCode.OK);
-                responseFromService3.Content = new StringContent("Hello world from service3");
-                responseHandler.AddFakeResponse(new System.Uri("http://service3.com/1/2/3"), responseFromService3);
+                responseHandler.AddFakeResponseGenerator(new System.Uri("http://service2.com/requestPath"), () =>
+                {
+                    var responseFromService2 = new HttpResponseMessage(HttpStatusCode.OK);
+                    responseFromService2.Content = new StringContent(SuccessfulResponseContentFromService2);
+
+                    return responseFromService2;
+                });
+
+                responseHandler.AddFakeResponseGenerator(new System.Uri("http://service3.com/1/2/3"), () =>
+                {
+                    var responseFromService3 = new HttpResponseMessage(HttpStatusCode.OK);
+                    responseFromService3.Content = new StringContent("Hello world from service3");
+
+                    return responseFromService3;
+                });
 
                 return responseHandler;
             }

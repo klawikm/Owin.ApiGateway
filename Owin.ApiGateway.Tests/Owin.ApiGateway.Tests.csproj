@@ -87,6 +87,7 @@
     <Compile Include="FakeResponseHandler.cs" />
     <Compile Include="OwinApplicationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LoadBalancingTests.cs" />
     <Compile Include="RoutingTests.cs" />
   </ItemGroup>
   <ItemGroup>

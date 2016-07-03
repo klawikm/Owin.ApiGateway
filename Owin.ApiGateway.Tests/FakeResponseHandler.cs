@@ -10,18 +10,18 @@ namespace Owin.ApiGateway.Tests
 {
     public class FakeResponseHandler : DelegatingHandler
     {
-        private readonly Dictionary<Uri, HttpResponseMessage> _FakeResponses = new Dictionary<Uri, HttpResponseMessage>();
+        private readonly Dictionary<Uri, Func<HttpResponseMessage>> _FakeResponsesGeneators = new Dictionary<Uri, Func<HttpResponseMessage>>();
 
-        public void AddFakeResponse(Uri uri, HttpResponseMessage responseMessage)
+        public void AddFakeResponseGenerator(Uri uri, Func<HttpResponseMessage> responseMessageGenerator)
         {
-            _FakeResponses.Add(uri, responseMessage);
+            _FakeResponsesGeneators.Add(uri, responseMessageGenerator);
         }
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
-            if (_FakeResponses.ContainsKey(request.RequestUri))
+            if (_FakeResponsesGeneators.ContainsKey(request.RequestUri))
             {
-                return _FakeResponses[request.RequestUri];
+                return _FakeResponsesGeneators[request.RequestUri]();
             }
             else
             {
