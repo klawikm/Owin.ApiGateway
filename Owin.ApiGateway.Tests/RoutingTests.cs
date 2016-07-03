@@ -25,6 +25,18 @@
         }
 
         [TestMethod]
+        public async Task HttpGetRequestWithParametersInRequestPath_RoutingTableConfigured_ParametersWereParsedAndThenConvertedAndValidResponseReturned()
+        {
+            using (var server = TestServer.Create<TestStartup>())
+            {
+                HttpResponseMessage response = await server.HttpClient.GetAsync("/service3/query_1_2_3"); // will be converted to http://service3.com/1/2/3
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                Assert.AreEqual("Hello world from service3", responseString);
+            }
+        }
+
+        [TestMethod]
         public async Task HttpGetRequest_RoutingTableNotConfigured_404ResponseReturned()
         {
             using (var server = TestServer.Create<TestStartup>())
@@ -83,6 +95,10 @@
                 responseFromService2.Content = new StringContent(SuccessfulResponseContentFromService2);
                 responseHandler.AddFakeResponse(new System.Uri("http://service2.com/requestPath"), responseFromService2);
 
+                var responseFromService3 = new HttpResponseMessage(HttpStatusCode.OK);
+                responseFromService3.Content = new StringContent("Hello world from service3");
+                responseHandler.AddFakeResponse(new System.Uri("http://service3.com/1/2/3"), responseFromService3);
+
                 return responseHandler;
             }
 
@@ -121,6 +137,21 @@
                             }
                         }
                     });
+                    configuration.Endpoints.Add(new Configuration.RoutingEndpoint
+                    {
+                        Id = "service3",
+                        Instances = new Configuration.Instances
+                        {
+                            Instance = new System.Collections.Generic.List<Configuration.Instance>
+                            {
+                                new Configuration.Instance
+                                {
+                                    Status = ApiGateway.Configuration.InstanceStatuses.Up,
+                                    Url = "http://service3.com/{R:1}/{R:2}/{R:3}"
+                                }
+                            }
+                        }
+                    });
 
                     configuration.Routes.Add(new Configuration.RouteConfiguration
                     {
@@ -137,6 +168,14 @@
                             RequiredSoapAction = "owin.apigateway.tests.action1"
                         },
                         EndpointId = "service2"
+                    });
+                    configuration.Routes.Add(new Configuration.RouteConfiguration
+                    {
+                        RequestPathAndQueryCondition = new RoutingConditions.RequestPathAndQueryCondition
+                        {
+                            RequestPathRegexString = "^service3/query_([0-9]*)_([0-9]*)_([0-9]*)"
+                        },
+                        EndpointId = "service3"
                     });
                 }
 
