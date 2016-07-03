@@ -8,11 +8,12 @@
     using global::Common.Logging;
     using Moq;
     using System.Net;
+    using System.Text;
     [TestClass]
     public class RoutingTests
     {
         [TestMethod]
-        public async Task HttpGetRequest_RoutingTableConfigured_ValidResponseReturnedFromTargetService()
+        public async Task HttpGetRequest_RoutingTableConfigured_ValidResponseReturned()
         {
             using (var server = TestServer.Create<TestStartup>())
             {
@@ -23,8 +24,39 @@
             }
         }
 
+        [TestMethod]
+        public async Task HttpGetRequest_RoutingTableNotConfigured_404ResponseReturned()
+        {
+            using (var server = TestServer.Create<TestStartup>())
+            {
+                HttpResponseMessage response = await server.HttpClient.GetAsync("/serviceABC");
+                Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode); 
+            }
+        }
+
+        [TestMethod]
+        public async Task SoapRequest_RoutingTableConfigured_ValidResponseReturned()
+        {
+            using (var server = TestServer.Create<TestStartup>())
+            {
+                var soapString = @"<?xml version=""1.0"" encoding=""utf-8""?><s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/""><s:Body><Query>?</Query></s:Body></s:Envelope>";
+
+                var client = server.HttpClient;
+                
+                client.DefaultRequestHeaders.Add("SOAPAction", "owin.apigateway.tests.action1");
+                var content = new StringContent(soapString, Encoding.UTF8, "text/xml");
+                using (var response = await client.PostAsync("/service2", content))
+                {
+                    var soapResponse = await response.Content.ReadAsStringAsync();
+                    Assert.AreEqual(TestStartup.SuccessfulResponseContentFromService2, soapResponse);
+                }
+            }
+        }
+
         private class TestStartup
         {
+            public const string SuccessfulResponseContentFromService2 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\"><a>Computer 1</a></env:Body></env:Envelope>";
+
             private static Configuration.Configuration configuration;
 
             public void Configuration(IAppBuilder app)
@@ -35,11 +67,23 @@
                 app.UseConfigurationManager(this.GetCurrentConfiguration, logger);
                 app.UseRoutingManagerMiddleware(logger, this.GetCurrentConfiguration);
 
-                var responseHandler = new FakeResponseHandler();
-                var response = new HttpResponseMessage(HttpStatusCode.OK);
-                response.Content = new StringContent("Hello world from service1");
-                responseHandler.AddFakeResponse(new System.Uri("http://service1.com/requestPath"), response);
+                var responseHandler = PrepareHttpMessageHandler();
                 app.UseProxy(logger, new ProxyOptions { VerboseMode = false }, responseHandler);
+            }
+
+            private HttpMessageHandler PrepareHttpMessageHandler()
+            {
+                var responseHandler = new FakeResponseHandler();
+
+                var responseFromService1 = new HttpResponseMessage(HttpStatusCode.OK);
+                responseFromService1.Content = new StringContent("Hello world from service1");
+                responseHandler.AddFakeResponse(new System.Uri("http://service1.com/requestPath"), responseFromService1);
+
+                var responseFromService2 = new HttpResponseMessage(HttpStatusCode.OK);
+                responseFromService2.Content = new StringContent(SuccessfulResponseContentFromService2);
+                responseHandler.AddFakeResponse(new System.Uri("http://service2.com/requestPath"), responseFromService2);
+
+                return responseHandler;
             }
 
             private Configuration.Configuration GetCurrentConfiguration()
@@ -62,6 +106,21 @@
                             }
                         }
                     });
+                    configuration.Endpoints.Add(new Configuration.RoutingEndpoint
+                    {
+                        Id = "service2",
+                        Instances = new Configuration.Instances
+                        {
+                            Instance = new System.Collections.Generic.List<Configuration.Instance>
+                            {
+                                new Configuration.Instance
+                                {
+                                    Status = ApiGateway.Configuration.InstanceStatuses.Up,
+                                    Url = "http://service2.com/requestPath"
+                                }
+                            }
+                        }
+                    });
 
                     configuration.Routes.Add(new Configuration.RouteConfiguration
                     {
@@ -70,6 +129,14 @@
                             RequestPathRegexString = "^service1(.*)"
                         },
                         EndpointId = "service1"
+                    });
+                    configuration.Routes.Add(new Configuration.RouteConfiguration
+                    {
+                        SoapActionCondition = new RoutingConditions.SoapActionCondition
+                        {
+                            RequiredSoapAction = "owin.apigateway.tests.action1"
+                        },
+                        EndpointId = "service2"
                     });
                 }
 
