@@ -56,6 +56,15 @@
                     }
                 }
             }
+            catch (HealthyInstanceNotFoundException hinf_ex)
+            {
+                var context = new OwinContext(env);
+                var resp = context.Response;
+                resp.StatusCode = 500;
+
+                var requestInfoString = Tools.BuildRequestInfo(env);
+                resp.Write($"All instances serving [{requestInfoString}] are down.");
+            }
             catch (Exception ex)
             {
                 this.logger.ErrorFormat("Exception in ConfigurationManagerMiddleware", ex);

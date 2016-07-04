@@ -77,7 +77,7 @@
                 
                 if (string.IsNullOrEmpty(endpointUrlTemplateString))
                 {
-                    endpointUrlTemplateString = endpoint.Instances.Instance.First(i => i.Status == InstanceStatuses.Up).Url;
+                    endpointUrlTemplateString = endpoint.Instances.Instance.FirstOrDefault(i => i.Status == InstanceStatuses.Up)?.Url;
                 }
 
                 if (string.IsNullOrEmpty(endpointUrlTemplateString))
