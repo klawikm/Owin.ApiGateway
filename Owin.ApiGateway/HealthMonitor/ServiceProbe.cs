@@ -27,6 +27,13 @@
 
         private ILog logger;
 
+        private HttpMessageHandler httpClientMessageHandler = null;
+
+        public ServiceProbe(HttpMessageHandler httpClientMessageHandler = null)
+        {
+            this.httpClientMessageHandler = httpClientMessageHandler;
+        }
+
         public void Initialize(Func<Configuration> configuartionProvider, ILog logger)
         {
             this.configuartionProvider = configuartionProvider;
@@ -87,15 +94,7 @@
 
                         foreach (var endpoint in config.Endpoints)
                         {
-                            if (endpoint.Instances?.Instance == null)
-                            {
-                                continue;
-                            }
-
-                            foreach (var instance in endpoint.Instances.Instance)
-                            {
-                                this.TestServiceInstance(endpoint, instance);
-                            }
+                            this.TestEndpoint(endpoint);
                         }
 
                         Thread.Sleep(IntervalMilliseconds);
@@ -112,6 +111,19 @@
             }
         }
 
+        public void TestEndpoint(RoutingEndpoint endpoint)
+        {
+            if (endpoint.Instances?.Instance == null)
+            {
+                return;
+            }
+
+            foreach (var instance in endpoint.Instances.Instance)
+            {
+                this.TestServiceInstance(endpoint, instance);
+            }
+        }
+
         private void TestServiceInstance(RoutingEndpoint endpoint, Instance instance)
         {
             var healthCheck = endpoint.HealthCheck;
@@ -124,7 +136,18 @@
             string host = u.Host;
             string monitoringUri = u.Scheme + "://" + host + ":" + u.Port + (healthCheck.MonitoringPath.StartsWith("/") ? "" : "/") + healthCheck.MonitoringPath;
 
-            using (var httpClient = new HttpClient())
+            HttpClient httpClient;
+
+            if (this.httpClientMessageHandler == null)
+            {
+                httpClient = new HttpClient();
+            }
+            else
+            {
+                httpClient = new HttpClient(this.httpClientMessageHandler, disposeHandler: true);
+            }
+
+            try
             {
                 using (var request = new HttpRequestMessage(new HttpMethod("get"), monitoringUri))
                 {
@@ -179,6 +202,13 @@
                         }
                     }
 
+                }
+            }
+            finally
+            {
+                if (httpClient != null)
+                {
+                    httpClient.Dispose();
                 }
             }
         } // TestServiceInstance 

@@ -90,6 +90,7 @@
     <Compile Include="LoadBalancingTests.cs" />
     <Compile Include="RoutingTests.cs" />
     <Compile Include="HealthCheckingTests.cs" />
+    <Compile Include="ServiceProbeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
