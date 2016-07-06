@@ -31,6 +31,11 @@
             this.logger = logger;
         }
 
+        public static void ResetRoundRobinData()
+        {
+            _endpointId2LastUrlTemplate = new Dictionary<string, string>();
+        }
+
         public async Task Invoke(IDictionary<string, object> env)
         {
             try

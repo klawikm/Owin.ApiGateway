@@ -17,6 +17,9 @@
         {
             using (var server = TestServer.Create<TestStartup>())
             {
+                // because of possible interference from other unit tests we must reset roundrobin data so first call will be send to first instance defined in configuration
+                RoutingManagerMiddleware.ResetRoundRobinData();
+                
                 HttpResponseMessage response = await server.HttpClient.GetAsync("/service1");
                 var responseString = await response.Content.ReadAsStringAsync();
                 Assert.AreEqual("Hello world from service1 instance 1", responseString);
