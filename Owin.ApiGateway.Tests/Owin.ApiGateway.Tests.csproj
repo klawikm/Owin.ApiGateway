@@ -84,6 +84,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="RequestResponseLoggerTests.cs" />
     <Compile Include="FakeResponseHandler.cs" />
     <Compile Include="CacheTests.cs" />
     <Compile Include="OwinApplicationTests.cs" />
