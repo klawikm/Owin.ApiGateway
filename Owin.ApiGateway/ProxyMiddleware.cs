@@ -34,12 +34,23 @@
         /// <param name="logger">logger used to log warnings, errors and debug messages</param>
         /// <param name="options">proxy opitions</param>
         /// <param name="httpClientMessageHandler">if defined this message handler will be used to initialize HttpClient. This parameter is used in unit tests.</param>
-        public ProxyMiddleware(AppFunc next, ILog logger, ProxyOptions options, HttpMessageHandler httpClientMessageHandler = null)
+        public ProxyMiddleware(AppFunc next, ILog logger, ProxyOptions options, HttpMessageHandler httpClientMessageHandler)
         {
             this.next = next;
             this.options = options;
             this.logger = logger;
             this.httpClientMessageHandler = httpClientMessageHandler;
+        }
+
+        /// <summary>
+        /// Initializes ProxyMiddleware. A middleware that sends request to target service, reads reponse from this service and sends it back to pipeline. This middleware should be the 
+        /// last one in pipeline
+        /// </summary>
+        /// <param name="next"></param>
+        /// <param name="logger">logger used to log warnings, errors and debug messages</param>
+        /// <param name="options">proxy opitions</param>
+        public ProxyMiddleware(AppFunc next, ILog logger, ProxyOptions options) : this (next, logger, options, null)
+        {
         }
 
         public async Task Invoke(IDictionary<string, object> env)
