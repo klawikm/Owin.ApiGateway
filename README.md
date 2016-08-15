@@ -30,6 +30,7 @@ version 0.0.1 - I've just started :-)
 * Wide caching options (including POST operations)
 * Circuit Breaker
 * Health checking / monitoring
+* Admin dashboard (check and edit configuration using web interface)
 
 ## Implemented features
 
