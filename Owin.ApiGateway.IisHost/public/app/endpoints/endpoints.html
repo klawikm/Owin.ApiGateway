@@ -1,0 +1,63 @@
+﻿<h1>Endpoints</h1>
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Routing endpoints</h3>
+        <div class="box-tools">
+            <div class="input-group input-group-sm" style="width: 150px;">
+                <input name="table_search" class="form-control pull-right" type="text" placeholder="Search">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+            <tbody>
+                <tr>
+                    <th>Endpoint ID</th>
+                    <th>Status</th>
+                    <th>Substatus</th>
+                    <th>Instances</th>
+                    <th>Health Check URL</th>
+                    <th></th>
+                </tr>
+                <tr data-ng-repeat="ep in vm.model.endpoints">
+                    <td>{{ep.id}}</td>
+                    <td>{{vm.getStatusText(ep)}}</td>
+                    <td>{{vm.getSubstatusText(ep)}}</td>
+                    <td>{{ep.instances.instance.length}}</td>
+                    <td>{{ep.healthCheck.monitoringPath}}</td>
+                    <td><button class="btn btn-primary" type="submit" data-ng-click="vm.startEndpointEditing(ep)">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="box box-info" data-ng-show="vm.editedEndpoint">
+    <div class="box-header with-border">
+        <h3 class="box-title">Endpoint {{vm.editedEndpoint.id}}</h3>
+    </div>
+    <!-- /.box-header -->
+    <!-- form start -->
+    <form class="form-horizontal">
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="endpointId">Id</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="endpointId" type="text" data-ng-model="vm.editedEndpoint.id" required />
+                </div>
+                <label class="col-sm-2 control-label" for="healthCheckUrl">Health Check URL</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="healthCheckUrl" type="text" data-ng-model="vm.editedEndpoint.healthCheck.monitoringPath" />
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button class="btn btn-default" type="submit">Cancel</button>
+            <button class="btn btn-info pull-right" type="submit">Save</button>
+        </div>
+        <!-- /.box-footer -->
+    </form>
+</div>
