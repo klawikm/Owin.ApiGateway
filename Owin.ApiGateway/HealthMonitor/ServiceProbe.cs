@@ -102,6 +102,7 @@
                     catch (Exception e)
                     {
                         this.logger.Error("Exception was thrown when checking service health", e);
+                        Thread.Sleep(IntervalMilliseconds);
                     }
                 }
             }
@@ -203,6 +204,12 @@
                     }
 
                 }
+            }
+            catch (Exception)
+            {
+                instance.Status = InstanceStatuses.Down;
+
+                throw;
             }
             finally
             {

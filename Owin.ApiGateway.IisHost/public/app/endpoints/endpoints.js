@@ -13,13 +13,16 @@
         var vm = this;
 
         vm.model = {
-
+            configuration: null,
+            availableStatuses: [{ code: 0, name: "Unknown" }, { code: 1, name: "Up" }, { code: 2, name: "Down" } ],
         };
 
         vm.getStatusText = getStatusText;
         vm.getSubstatusText = getSubstatusText;
         vm.startEndpointEditing = startEndpointEditing;
-
+        vm.cancelEndpointEditing = cancelEndpointEditing;
+        vm.updatedEditedEndpoint = updatedEditedEndpoint;
+        
         activate();
 
         function activate() {
@@ -37,6 +40,14 @@
                .then(function () {
                    vm.isBusy = false;
                });
+        }
+
+        function updatedEditedEndpoint() {
+
+        }
+
+        function cancelEndpointEditing() {
+            vm.editedEndpoint = null;
         }
 
         function startEndpointEditing(endpoint) {
@@ -95,7 +106,7 @@
 
                     if (response.status === 200) {
 
-                        vm.model = response.data;
+                        vm.model.configuration = response.data;
 
                     } else {
                         logError("Sorry, something went wrong during...");
