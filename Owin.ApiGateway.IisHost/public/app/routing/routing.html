@@ -1,1 +1,51 @@
-﻿<h3>routing...</h3>
+﻿<h1>Routing table</h1>
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Routing</h3>
+        <div class="box-tools">
+            <div class="input-group input-group-sm" style="width: 150px;">
+                <input name="table_search" class="form-control pull-right" type="text" placeholder="Search">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+            <tbody>
+                <tr>
+                    <th>Endpoint ID</th>
+                    <th>Condition type</th>
+                    <th>Condition param.</th>
+                    <th>Cache</th>
+                    <th>Logger</th>
+                    <th></th>
+                </tr>
+                <tr data-ng-repeat="route in vm.model.configuration.routes">
+                    <td>{{route.endpointId}}</td>
+                    <td>
+                        <span data-ng-show="route.soapActionCondition">Soap Action</span>
+                        <span data-ng-show="route.requestPathAndQueryCondition">Request Path RegEx</span>
+                        <span data-ng-show="route.alwaysMatchingCondition">Always Matching</span>
+                    </td>
+                    <td>
+                        <span data-ng-show="route.soapActionCondition">{{route.soapActionCondition.requiredSoapAction}}</span>
+                        <span data-ng-show="route.requestPathAndQueryCondition">{{route.requestPathAndQueryCondition.requestPathRegexString}}</span>
+                    </td>
+                    <td>
+                        <div data-ng-show="route.cache">
+                            {{route.cache.isEnabled ? "ON" : "OFF"}} {{route.cache.expirationTimeInMinutes}} mins.
+                        </div>
+                    </td>
+                    <td>
+                        <div data-ng-show="route.logger">
+                            {{route.logger.isEnabled ? "ON" : "OFF"}}
+                        </div>
+                    </td>
+                    <td><button class="btn btn-primary" type="submit" data-ng-click="vm.startRouteEditing(route)">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

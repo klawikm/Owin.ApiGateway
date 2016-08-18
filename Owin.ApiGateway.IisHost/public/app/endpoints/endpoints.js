@@ -43,7 +43,13 @@
         }
 
         function updatedEditedEndpoint() {
-
+            context.updateCurrentConfiguration(vm.model.configuration).then(function (response) {
+                if (response.status === 200) {
+                    cancelEndpointEditing();
+                } else {
+                    logError("Sorry, something went wrong during...");
+                }
+            });
         }
 
         function cancelEndpointEditing() {

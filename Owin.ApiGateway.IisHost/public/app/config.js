@@ -5,6 +5,7 @@
 
     var config = {
         getCurrentConfigurationUrl: '/Owin.ApiGateway.IisHost/api/Configuration/GetCurrentConfiguration',
+        updateCurrentConfigurationUrl: '/Owin.ApiGateway.IisHost/api/Configuration/OverrideCurrentConfiguration',
         version: '1.0.0'
     };
 

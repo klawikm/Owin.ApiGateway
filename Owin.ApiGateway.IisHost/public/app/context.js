@@ -12,7 +12,8 @@
         var $q = common.$q;
 
         var service = {
-            getCurrentConfiguration: getCurrentConfiguration
+            getCurrentConfiguration: getCurrentConfiguration,
+            updateCurrentConfiguration: updateCurrentConfiguration,
         };
 
         function getCurrentConfiguration() {
@@ -23,6 +24,18 @@
                 }, function (error) {
                     return error;
                 });
+
+            return $q.when(promise);
+        }
+
+        function updateCurrentConfiguration(modifiedConfiguration) {
+            var promise = $http.post(config.updateCurrentConfigurationUrl, modifiedConfiguration)
+                .then(function (response) {
+                    return response;
+                },
+                    function (error) {
+                        return error;
+                    });
 
             return $q.when(promise);
         }

@@ -208,8 +208,6 @@
             catch (Exception)
             {
                 instance.Status = InstanceStatuses.Down;
-
-                throw;
             }
             finally
             {

@@ -110,8 +110,8 @@
             kernel.Bind<Configuration.IConfigurationProvider>().To<XmlConfigurationProvider>();
 
             // TODO: Uncomment lines below before using Configuration API for changing configuration 
-            // IBus bus = kernel.Get<IBus>();
-            // ConfigureBus(bus); 
+            IBus bus = kernel.Get<IBus>();
+            ConfigureBus(bus); 
 
             return kernel;
         }
