@@ -28,10 +28,14 @@
                     <td>{{vm.getSubstatusText(ep)}}</td>
                     <td>{{ep.instances.instance.length}}</td>
                     <td>{{ep.healthCheck.monitoringPath}}</td>
-                    <td><button class="btn btn-primary" type="submit" data-ng-click="vm.startEndpointEditing(ep)">Edit</button></td>
+                    <td>
+                        <button class="btn btn-primary" type="submit" data-ng-click="vm.startEndpointEditing(ep)">Edit</button>
+                        <button class="btn btn-primary btn-warning" ng-really-message="Are you sure?" ng-really-click="vm.deleteEndpoint(ep)">Remove</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
+        <button class="btn btn-info pull-left" data-ng-hide="vm.editedEndpoint" data-ng-click="vm.addNewEndpoint()">Add new endpoint</button>
     </div>
 </div>
 <div class="box box-info" data-ng-show="vm.editedEndpoint">
@@ -56,12 +60,14 @@
                 <span class="col-sm-2 control-label">Instance {{$index}}</span>
                 <div class="col-sm-10">
                     <input class="form-control" type="text" data-ng-model="i.url" required />
+                    <button class="btn btn-primary btn-warning" ng-really-message="Are you sure?" ng-really-click="vm.deleteInstance(vm.editedEndpoint, i)">Remove</button>
                 </div>
                 <span class="col-sm-2 control-label">Status</span>
                 <div class="col-sm-10">
                     <select class="form-control" data-ng-model="i.status" data-ng-options="sta.code as sta.name for sta in vm.model.availableStatuses"  />
                 </div>
             </div>
+            <button class="btn btn-info pull-left" data-ng-click="vm.addNewInstance(vm.editedEndpoint)">Add new instance</button>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">

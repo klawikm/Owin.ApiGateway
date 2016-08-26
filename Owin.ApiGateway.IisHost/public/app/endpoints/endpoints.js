@@ -22,6 +22,10 @@
         vm.startEndpointEditing = startEndpointEditing;
         vm.cancelEndpointEditing = cancelEndpointEditing;
         vm.updatedEditedEndpoint = updatedEditedEndpoint;
+        vm.addNewEndpoint = addNewEndpoint;
+        vm.deleteEndpoint = deleteEndpoint;
+        vm.deleteInstance = deleteInstance;
+        vm.addNewInstance = addNewInstance;
         
         activate();
 
@@ -42,8 +46,54 @@
                });
         }
 
+        function deleteInstance(endpoint, instanceToDel) {
+            var index = endpoint.instances.instance.indexOf(instanceToDel);
+            if (index != -1) {
+                endpoint.instances.instance.splice(index, 1);
+            }
+        }
+
+        function addNewInstance(endpoint) {
+
+            if (endpoint.instances == null) {
+                endpoint.instances = {};
+            }
+
+            if (endpoint.instances.instance == null) {
+                endpoint.instances.instance = [];
+            }
+
+            endpoint.instances.instance.push({});
+        }
+
+        function addNewEndpoint() {
+            var newEndpoint = {};
+            vm.editedEndpoint = newEndpoint;
+        }
+
+        function deleteEndpoint(endpoint) {
+            var index = vm.model.configuration.endpoints.indexOf(endpoint);
+            if (index != -1) {
+                vm.model.configuration.endpoints.splice(index, 1);
+                udateConfiguration(vm.model.configuration);
+            }
+        }
+
         function updatedEditedEndpoint() {
-            context.updateCurrentConfiguration(vm.model.configuration).then(function (response) {
+            // add new endpoint to the configuration
+            if (vm.model.configuration.endpoints == null) {
+                vm.model.configuration.endpoints = [];
+            }
+
+            if (vm.model.configuration.endpoints.indexOf(vm.editedEndpoint) == -1) {
+                vm.model.configuration.endpoints.push(vm.editedEndpoint);
+            }
+
+            udateConfiguration(vm.model.configuration);
+        }
+
+        function udateConfiguration(configuration) {
+            context.updateCurrentConfiguration(configuration).then(function (response) {
                 if (response.status === 200) {
                     cancelEndpointEditing();
                 } else {
