@@ -65,9 +65,50 @@
             }
         }
 
+        [TestMethod]
+        public async Task SoapRequest_MoreThanOneSoapActionInRoutingCondition_ValidResponseReturned()
+        {
+            using (var server = TestServer.Create<TestStartup>())
+            {
+                var soapString = @"<?xml version=""1.0"" encoding=""utf-8""?><s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/""><s:Body><Query>?</Query></s:Body></s:Envelope>";
+
+                var client = server.HttpClient;
+
+                client.DefaultRequestHeaders.Add("SOAPAction", "owin.apigateway.tests.action_B");
+                var content = new StringContent(soapString, Encoding.UTF8, "text/xml");
+                using (var response = await client.PostAsync("/service4", content))
+                {
+                    var soapResponse = await response.Content.ReadAsStringAsync();
+                    Assert.AreEqual(TestStartup.SuccessfulResponseContentFromService4, soapResponse);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task SoapRequest_MoreThanOneSoapActionPatternInRoutingCondition_ValidResponseReturned()
+        {
+            using (var server = TestServer.Create<TestStartup>())
+            {
+                var soapString = @"<?xml version=""1.0"" encoding=""utf-8""?><s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/""><s:Body><Query>?</Query></s:Body></s:Envelope>";
+
+                var client = server.HttpClient;
+
+                client.DefaultRequestHeaders.Add("SOAPAction", "owin.apigateway.tests.action_Y123");
+                var content = new StringContent(soapString, Encoding.UTF8, "text/xml");
+                using (var response = await client.PostAsync("/service5", content))
+                {
+                    var soapResponse = await response.Content.ReadAsStringAsync();
+                    Assert.AreEqual(TestStartup.SuccessfulResponseContentFromService5, soapResponse);
+                }
+            }
+        }
+
         private class TestStartup
         {
-            public const string SuccessfulResponseContentFromService2 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\"><a>Computer 1</a></env:Body></env:Envelope>";
+            public const string SuccessfulResponseContentFromService2 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\"><a>Computer 1</a></SomeResponse></env:Body></env:Envelope>";
+            public const string SuccessfulResponseContentFromService4 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\">Test4</SomeResponse></env:Body></env:Envelope>";
+            public const string SuccessfulResponseContentFromService5 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\">Test5</SomeResponse></env:Body></env:Envelope>";
+
 
             private static Configuration.Configuration configuration;
 
@@ -109,6 +150,22 @@
                     responseFromService3.Content = new StringContent("Hello world from service3");
 
                     return responseFromService3;
+                });
+
+                responseHandler.AddFakeResponseGenerator(new System.Uri("http://service4.com/requestPath"), () =>
+                {
+                    var responseFromService4 = new HttpResponseMessage(HttpStatusCode.OK);
+                    responseFromService4.Content = new StringContent(SuccessfulResponseContentFromService4);
+
+                    return responseFromService4;
+                });
+
+                responseHandler.AddFakeResponseGenerator(new System.Uri("http://service5.com/requestPath"), () =>
+                {
+                    var responseFromService5 = new HttpResponseMessage(HttpStatusCode.OK);
+                    responseFromService5.Content = new StringContent(SuccessfulResponseContentFromService5);
+
+                    return responseFromService5;
                 });
 
                 return responseHandler;
@@ -165,6 +222,38 @@
                         }
                     });
 
+                    configuration.Endpoints.Add(new Configuration.RoutingEndpoint
+                    {
+                        Id = "service4",
+                        Instances = new Configuration.Instances
+                        {
+                            Instance = new System.Collections.Generic.List<Configuration.Instance>
+                            {
+                                new Configuration.Instance
+                                {
+                                    Status = ApiGateway.Configuration.InstanceStatuses.Up,
+                                    Url = "http://service4.com/requestPath"
+                                }
+                            }
+                        }
+                    });
+
+                    configuration.Endpoints.Add(new Configuration.RoutingEndpoint
+                    {
+                        Id = "service5",
+                        Instances = new Configuration.Instances
+                        {
+                            Instance = new System.Collections.Generic.List<Configuration.Instance>
+                            {
+                                new Configuration.Instance
+                                {
+                                    Status = ApiGateway.Configuration.InstanceStatuses.Up,
+                                    Url = "http://service5.com/requestPath"
+                                }
+                            }
+                        }
+                    });
+
                     configuration.Routes.Add(new Configuration.RouteConfiguration
                     {
                         RequestPathAndQueryCondition = new RoutingConditions.RequestPathAndQueryCondition
@@ -177,7 +266,7 @@
                     {
                         SoapActionCondition = new RoutingConditions.SoapActionCondition
                         {
-                            RequiredSoapAction = "owin.apigateway.tests.action1"
+                            RequiredSoapActions = new[] { "owin.apigateway.tests.action1" }
                         },
                         EndpointId = "service2"
                     });
@@ -188,6 +277,24 @@
                             RequestPathRegexString = "^service3/query_([0-9]*)_([0-9]*)_([0-9]*)"
                         },
                         EndpointId = "service3"
+                    });
+                    // condition with more than one soap action:
+                    configuration.Routes.Add(new Configuration.RouteConfiguration
+                    {
+                        SoapActionCondition = new RoutingConditions.SoapActionCondition
+                        {
+                            RequiredSoapActions = new[] { "owin.apigateway.tests.action_A", "owin.apigateway.tests.action_B" }
+                        },
+                        EndpointId = "service4"
+                    });
+                    // condition with more than one soap action pattern (regex)
+                    configuration.Routes.Add(new Configuration.RouteConfiguration
+                    {
+                        SoapActionCondition = new RoutingConditions.SoapActionCondition
+                        {
+                            RequiredSoapActionRegexStrings = new[] { "^(owin.apigateway.tests.action_X)[0-9]*", "^(owin.apigateway.tests.action_Y)[0-9]*" }
+                        },
+                        EndpointId = "service5"
                     });
                 }
 

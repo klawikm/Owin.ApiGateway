@@ -1,19 +1,50 @@
 ﻿namespace Owin.ApiGateway.RoutingConditions
 {
     using System.Collections.Generic;
-
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Xml.Serialization;
     public class SoapActionCondition : RoutingCondition
     {
+        private string[] requiredSoapActionRegexStrings;
+
         public SoapActionCondition()
         {
         }
 
-        public SoapActionCondition(string requiredSoapAction)
+        public SoapActionCondition(string[] requiredSoapActions)
         {
-            this.RequiredSoapAction = requiredSoapAction;
+            this.RequiredSoapActions = requiredSoapActions;
         }
 
-        public string RequiredSoapAction { get; set; }
+        public SoapActionCondition(string[] requiredSoapActions, string[] requiredSoapActionsRegex)
+        {
+            this.RequiredSoapActions = requiredSoapActions;
+            this.RequiredSoapActionRegexStrings = requiredSoapActionsRegex;
+        }
+
+        [XmlElement("RequiredSoapAction")]
+        public string[] RequiredSoapActions { get; set; }
+
+        [XmlElement("RequiredSoapActionRegex")]
+        public string[] RequiredSoapActionRegexStrings
+        {
+            get
+            {
+                return this.requiredSoapActionRegexStrings;
+            }
+            set
+            {
+                this.requiredSoapActionRegexStrings = value;
+
+                if (this.requiredSoapActionRegexStrings != null && this.requiredSoapActionRegexStrings.Length > 0)
+                {
+                    this.RequiredSoapActionRegularExpressions = this.requiredSoapActionRegexStrings.Select(s => new Regex(s)).ToArray();
+                }
+            }
+        }
+
+        private Regex[] RequiredSoapActionRegularExpressions { get; set; }
 
         public override ConditionResult Check(IDictionary<string, object> env)
         {
@@ -24,9 +55,19 @@
                 return new ConditionResult(false);
             }
 
-            var success = soapAction.Equals(this.RequiredSoapAction);
+            var condition1 = this.RequiredSoapActions != null && this.RequiredSoapActions.Any(a => a.Equals(soapAction));
+            if (condition1)
+            {
+                return new ConditionResult(true);
+            }
 
-            return new ConditionResult(success);
+            if (this.RequiredSoapActionRegularExpressions != null && this.RequiredSoapActionRegularExpressions.Length > 0)
+            {
+                var condition2 = this.RequiredSoapActionRegularExpressions.Any(e => e.IsMatch(soapAction));
+                return new ConditionResult(condition2);
+            }
+
+            return new ConditionResult(false);
         }
     }
 }

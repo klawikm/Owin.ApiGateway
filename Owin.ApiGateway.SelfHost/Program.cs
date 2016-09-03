@@ -15,12 +15,14 @@
         {
             var config = Owin.ApiGateway.Configuration.Configuration.Load();
 
-            //var e = config.Endpoints[0];
+            // var e = config.Endpoints[0];
             //e.Instances = new Instances();
             //e.Instances.Instance = new List<Instance>();
             //e.Instances.Instance.Add(new Instance {Status = InstanceStatuses.Up, Url = "asdasdasd"});
 
-            //XmlConfigurationProvider s = new XmlConfigurationProvider("test.xml");
+            //config.Routes[0].SoapActionCondition.RequiredSoapActions = new[] { "aaa", "bbbb", "ccc" };
+            //var local_fs = new LocalFilesystemConfigurationStorageService("test.xml");
+            //XmlConfigurationProvider s = new XmlConfigurationProvider(local_fs);
             //s.Save(config);
 
             int port = config.Port;

@@ -25,6 +25,9 @@
         vm.addLoggerSection = addLoggerSection;
         vm.addNewRouting = addNewRouting;
         vm.deleteRoute = deleteRoute;
+        vm.deleteFromList = deleteFromList;
+        vm.addEmptyStringToSelectedConditionSoapActions = addEmptyStringToSelectedConditionSoapActions;
+        vm.addEmptyStringToSelectedConditionSoapActionPatterns = addEmptyStringToSelectedConditionSoapActionPatterns;
 
         activate();
 
@@ -79,6 +82,21 @@
             }
         }
 
+        function deleteFromList(list, elementToBeRemoved) {
+            var index = list.indexOf(elementToBeRemoved);
+            if (index != -1) {
+                list.splice(index, 1);
+            }
+        }
+
+        function addEmptyStringToSelectedConditionSoapActions() {
+            vm.selectedConditionSoapActions.push({ v: "???" });
+        }
+
+        function addEmptyStringToSelectedConditionSoapActionPatterns() {
+            vm.selectedConditionSoapPatterns.push({ v: "???" });
+        }
+
         function addNewRouting() {
             var newRoute = {};
             vm.editedRoute = newRoute;
@@ -87,7 +105,18 @@
         function setPropertiesDescribingCondition(route, obj) {
             if (route.soapActionCondition) {
                 obj.selectedConditionType = "SoapAction";
-                obj.selectedConditionParameter = route.soapActionCondition.requiredSoapAction;
+                obj.selectedConditionSoapActions = [];
+                obj.selectedConditionSoapPatterns = [];
+                
+                for (var i = 0; i < route.soapActionCondition.requiredSoapActions.length; i++) {
+                    var sa = route.soapActionCondition.requiredSoapActions[i];
+                    obj.selectedConditionSoapActions.push({ v: sa });
+                };
+
+                for (var i = 0; i < route.soapActionCondition.requiredSoapActionRegexStrings.length; i++) {
+                    var sa_reg = route.soapActionCondition.requiredSoapActionRegexStrings[i];
+                    obj.selectedConditionSoapPatterns.push({ v: sa_reg });
+                };
             } else if (route.requestPathAndQueryCondition) {
                 obj.selectedConditionType = "RequestPathAndQuery";
                 obj.selectedConditionParameter = route.requestPathAndQueryCondition.requestPathRegexString;
@@ -133,7 +162,8 @@
 
             switch (vm.selectedConditionType) {
                 case "SoapAction":
-                    vm.editedRoute.soapActionCondition.requiredSoapAction = vm.selectedConditionParameter;
+                    vm.editedRoute.soapActionCondition.requiredSoapActions = vm.selectedConditionSoapActions.map(function (o) { return o.v; });
+                    vm.editedRoute.soapActionCondition.requiredSoapActionRegexStrings = vm.selectedConditionSoapPatterns.map(function (o) { return o.v; });
                     break;
                 case "RequestPathAndQuery":
                     vm.editedRoute.requestPathAndQueryCondition.requestPathRegexString = vm.selectedConditionParameter;

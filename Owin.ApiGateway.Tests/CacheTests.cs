@@ -159,7 +159,7 @@
                     {
                         SoapActionCondition = new RoutingConditions.SoapActionCondition
                         {
-                            RequiredSoapAction = "owin.apigateway.tests.action1"
+                            RequiredSoapActions = new[] { "owin.apigateway.tests.action1" }
                         },
                         Cache = new ApiGateway.Configuration.CacheConfiguration
                         {

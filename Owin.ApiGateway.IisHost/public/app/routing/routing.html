@@ -30,7 +30,16 @@
                         <span data-ng-show="route.alwaysMatchingCondition">Always Matching</span>
                     </td>
                     <td>
-                        <span data-ng-show="route.soapActionCondition">{{route.soapActionCondition.requiredSoapAction}}</span>
+                        <div data-ng-show="route.soapActionCondition">
+                            <div data-ng-show="route.soapActionCondition.requiredSoapActions">
+                                Soap Actions:
+                                <div data-ng-repeat="sa in route.soapActionCondition.requiredSoapActions">{{sa}}</div>
+                            </div>
+                            <div data-ng-show="route.soapActionCondition.requiredSoapActionRegexStrings">
+                                Soap Action Patterns:
+                                <div data-ng-repeat="sareg in route.soapActionCondition.requiredSoapActionRegexStrings">{{sareg}}</div>
+                            </div>
+                        </div>
                         <span data-ng-show="route.requestPathAndQueryCondition">{{route.requestPathAndQueryCondition.requestPathRegexString}}</span>
                     </td>
                     <td>
@@ -74,10 +83,30 @@
                         <select class="form-control" data-ng-model="vm.selectedConditionType" data-ng-options="sta.code as sta.name for sta in vm.availableConditionTypes" />
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" data-ng-hide="vm.selectedConditionType=='SoapAction'">
                     <span class="col-sm-2 control-label">Condition parameter</span>
                     <div class="col-sm-10">
                         <input class="form-control" type="text" data-ng-model="vm.selectedConditionParameter" />
+                    </div>
+                </div>
+                <div class="row" data-ng-show="vm.selectedConditionType=='SoapAction'">
+                    <span class="col-sm-2 control-label">Soap Actions</span>
+                    <div class="col-sm-10">
+                        <div data-ng-repeat="sa in vm.selectedConditionSoapActions">
+                            <input class="form-control" type="text" data-ng-model="sa.v" />
+                            <button class="btn btn-primary btn-warning" ng-really-message="Are you sure?" ng-really-click="vm.deleteFromList(vm.selectedConditionSoapActions, sa)">Remove</button>
+                        </div>
+                        <button class="btn btn-info pull-left" data-ng-click="vm.addEmptyStringToSelectedConditionSoapActions()">Add new Soap Action</button>
+                    </div>
+                </div>
+                <div class="row" data-ng-show="vm.selectedConditionType=='SoapAction'">
+                    <span class="col-sm-2 control-label">Soap Action Patterns</span>
+                    <div class="col-sm-10">
+                        <div data-ng-repeat="sap in vm.selectedConditionSoapPatterns">
+                            <input class="form-control" type="text" data-ng-model="sap.v" />
+                            <button class="btn btn-primary btn-warning" ng-really-message="Are you sure?" ng-really-click="vm.deleteFromList(vm.selectedConditionSoapPatterns, sap)">Remove</button>
+                        </div>
+                        <button class="btn btn-info pull-left" data-ng-click="vm.addEmptyStringToSelectedConditionSoapActionPatterns()">Add new Soap Action Pattern</button>
                     </div>
                 </div>
             </div>
