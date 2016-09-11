@@ -103,6 +103,11 @@
                     }
                 }
 
+                if (!string.IsNullOrEmpty(routeConfiguration.EndpointInstanceUrlSufix))
+                {
+                    endpointUriBuilder.Append(routeConfiguration.EndpointInstanceUrlSufix);
+                }
+
                 env.Add(Tools.RedirectionUriEnvKey, endpointUriBuilder.ToString());
             }
             catch (Exception ex)

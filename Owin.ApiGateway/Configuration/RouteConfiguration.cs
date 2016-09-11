@@ -66,5 +66,7 @@ namespace Owin.ApiGateway.Configuration
         public LoggerConfiguration Logger { get; set; }
 
         public string EndpointId { get; set; }
+
+        public string EndpointInstanceUrlSufix { get; set; }
     }
 }

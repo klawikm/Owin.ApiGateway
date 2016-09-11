@@ -66,6 +66,25 @@
         }
 
         [TestMethod]
+        public async Task SoapRequest_RoutingTableConfiguredAndEndpointInstanceUrlSufixDefined_ValidResponseReturned()
+        {
+            using (var server = TestServer.Create<TestStartup>())
+            {
+                var soapString = @"<?xml version=""1.0"" encoding=""utf-8""?><s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/""><s:Body><Query>?</Query></s:Body></s:Envelope>";
+
+                var client = server.HttpClient;
+
+                client.DefaultRequestHeaders.Add("SOAPAction", "owin.apigateway.tests.action6");
+                var content = new StringContent(soapString, Encoding.UTF8, "text/xml");
+                using (var response = await client.PostAsync("/service6", content))
+                {
+                    var soapResponse = await response.Content.ReadAsStringAsync();
+                    Assert.AreEqual(TestStartup.SuccessfulResponseContentFromService6, soapResponse);
+                }
+            }
+        }
+
+        [TestMethod]
         public async Task SoapRequest_MoreThanOneSoapActionInRoutingCondition_ValidResponseReturned()
         {
             using (var server = TestServer.Create<TestStartup>())
@@ -108,7 +127,7 @@
             public const string SuccessfulResponseContentFromService2 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\"><a>Computer 1</a></SomeResponse></env:Body></env:Envelope>";
             public const string SuccessfulResponseContentFromService4 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\">Test4</SomeResponse></env:Body></env:Envelope>";
             public const string SuccessfulResponseContentFromService5 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\">Test5</SomeResponse></env:Body></env:Envelope>";
-
+            public const string SuccessfulResponseContentFromService6 = "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\"><env:Body><SomeResponse \"xmlns=owin.apigateway.tests\">Test6</SomeResponse></env:Body></env:Envelope>";
 
             private static Configuration.Configuration configuration;
 
@@ -166,6 +185,14 @@
                     responseFromService5.Content = new StringContent(SuccessfulResponseContentFromService5);
 
                     return responseFromService5;
+                });
+
+                responseHandler.AddFakeResponseGenerator(new System.Uri("http://service6.com/requestPath/someSubPath"), () =>
+                {
+                    var responseFromService6 = new HttpResponseMessage(HttpStatusCode.OK);
+                    responseFromService6.Content = new StringContent(SuccessfulResponseContentFromService6);
+
+                    return responseFromService6;
                 });
 
                 return responseHandler;
@@ -254,6 +281,22 @@
                         }
                     });
 
+                    configuration.Endpoints.Add(new Configuration.RoutingEndpoint
+                    {
+                        Id = "service6",
+                        Instances = new Configuration.Instances
+                        {
+                            Instance = new System.Collections.Generic.List<Configuration.Instance>
+                            {
+                                new Configuration.Instance
+                                {
+                                    Status = ApiGateway.Configuration.InstanceStatuses.Up,
+                                    Url = "http://service6.com/requestPath"
+                                }
+                            }
+                        }
+                    });
+
                     configuration.Routes.Add(new Configuration.RouteConfiguration
                     {
                         RequestPathAndQueryCondition = new RoutingConditions.RequestPathAndQueryCondition
@@ -295,6 +338,16 @@
                             RequiredSoapActionRegexStrings = new[] { "^(owin.apigateway.tests.action_X)[0-9]*", "^(owin.apigateway.tests.action_Y)[0-9]*" }
                         },
                         EndpointId = "service5"
+                    });
+                    // condition with UrlSufix defined. UrlSufix modifies URL that was defined for endpoint
+                    configuration.Routes.Add(new Configuration.RouteConfiguration
+                    {
+                        SoapActionCondition = new RoutingConditions.SoapActionCondition
+                        {
+                            RequiredSoapActions = new[] { "owin.apigateway.tests.action6" }
+                        },
+                        EndpointId = "service6",
+                        EndpointInstanceUrlSufix = "/someSubPath"
                     });
                 }
 

@@ -16,6 +16,7 @@
             <tbody>
                 <tr>
                     <th>Endpoint ID</th>
+                    <th>URL sufix</th>
                     <th>Condition type</th>
                     <th>Condition param.</th>
                     <th>Cache</th>
@@ -24,6 +25,7 @@
                 </tr>
                 <tr data-ng-repeat="route in vm.model.configuration.routes">
                     <td>{{route.endpointId}}</td>
+                    <td>{{route.endpointInstanceUrlSufix}}</td>
                     <td>
                         <span data-ng-show="route.soapActionCondition">Soap Action</span>
                         <span data-ng-show="route.requestPathAndQueryCondition">Request Path RegEx</span>
@@ -75,6 +77,12 @@
                     <span class="col-sm-2 control-label">Endpoint Id</span>
                     <div class="col-sm-10">
                         <input class="form-control" id="endpointId" type="text" data-ng-model="vm.editedRoute.endpointId" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="col-sm-2 control-label">URL sufix</span>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="urlSufix" type="text" data-ng-model="vm.editedRoute.endpointInstanceUrlSufix" required />
                     </div>
                 </div>
                 <div class="row">

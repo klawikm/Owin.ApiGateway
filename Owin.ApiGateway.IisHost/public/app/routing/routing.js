@@ -108,15 +108,19 @@
                 obj.selectedConditionSoapActions = [];
                 obj.selectedConditionSoapPatterns = [];
                 
-                for (var i = 0; i < route.soapActionCondition.requiredSoapActions.length; i++) {
-                    var sa = route.soapActionCondition.requiredSoapActions[i];
-                    obj.selectedConditionSoapActions.push({ v: sa });
-                };
+                if (route.soapActionCondition.requiredSoapActions) {
+                    for (var i = 0; i < route.soapActionCondition.requiredSoapActions.length; i++) {
+                        var sa = route.soapActionCondition.requiredSoapActions[i];
+                        obj.selectedConditionSoapActions.push({ v: sa });
+                    };
+                }
 
-                for (var i = 0; i < route.soapActionCondition.requiredSoapActionRegexStrings.length; i++) {
-                    var sa_reg = route.soapActionCondition.requiredSoapActionRegexStrings[i];
-                    obj.selectedConditionSoapPatterns.push({ v: sa_reg });
-                };
+                if (route.soapActionCondition.requiredSoapActionRegexStrings) {
+                    for (var i = 0; i < route.soapActionCondition.requiredSoapActionRegexStrings.length; i++) {
+                        var sa_reg = route.soapActionCondition.requiredSoapActionRegexStrings[i];
+                        obj.selectedConditionSoapPatterns.push({ v: sa_reg });
+                    };
+                }
             } else if (route.requestPathAndQueryCondition) {
                 obj.selectedConditionType = "RequestPathAndQuery";
                 obj.selectedConditionParameter = route.requestPathAndQueryCondition.requestPathRegexString;
